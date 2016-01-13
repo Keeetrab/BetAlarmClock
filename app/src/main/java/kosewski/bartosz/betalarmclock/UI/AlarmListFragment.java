@@ -31,6 +31,7 @@ public class AlarmListFragment extends Fragment {
     private AlarmDataSource mDataSource;
     private Context mContext;
     private List<Alarm> mAlarmList;
+    private RecyclerView mRecyclerView;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -58,6 +59,7 @@ public class AlarmListFragment extends Fragment {
     public void onResume() {
         super.onResume();
         mAlarmList = mDataSource.readAlarms();
+        mRecyclerView.setAdapter(new AlarmRecyclerViewAdapter(mAlarmList, mListener));
     }
 
     @Override
@@ -68,9 +70,9 @@ public class AlarmListFragment extends Fragment {
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            recyclerView.setAdapter(new AlarmRecyclerViewAdapter(mAlarmList, mListener));
+            mRecyclerView = (RecyclerView) view;
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+            mRecyclerView.setAdapter(new AlarmRecyclerViewAdapter(mAlarmList, mListener));
         }
         return view;
     }

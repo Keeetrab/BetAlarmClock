@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "SECTION 1";
+                    return "Alarms";
                 case 1:
                     return "SECTION 2";
             }

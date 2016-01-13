@@ -9,6 +9,7 @@ import android.widget.TextView;
 import kosewski.bartosz.betalarmclock.Alarm;
 import kosewski.bartosz.betalarmclock.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +26,7 @@ public class AlarmRecyclerViewAdapter extends RecyclerView.Adapter<AlarmRecycler
         mAlarms = items;
         mListener = listener;
     }
+
 
 
     @Override
