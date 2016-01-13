@@ -14,12 +14,12 @@ import kosewski.bartosz.betalarmclock.Alarm;
 /**
  * Created by Bartosz on 11.01.2016.
  */
-public class TableControllerAlarm {
+public class AlarmDataSource {
 
     private Context mContext;
     private DbHelper mDbHelper;
 
-    public TableControllerAlarm(Context context) {
+    public AlarmDataSource(Context context) {
         mContext = context;
         mDbHelper = new DbHelper(context);
     }

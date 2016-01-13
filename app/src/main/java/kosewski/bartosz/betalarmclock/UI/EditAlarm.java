@@ -15,13 +15,16 @@ import android.widget.TimePicker;
 
 import java.util.Calendar;
 
+import kosewski.bartosz.betalarmclock.Alarm;
 import kosewski.bartosz.betalarmclock.AlarmReceiver;
+import kosewski.bartosz.betalarmclock.Database.AlarmDataSource;
 import kosewski.bartosz.betalarmclock.R;
 
 public class EditAlarm extends AppCompatActivity {
     private TimePicker mTimePicker;
     private int mHour;
     private int mMinutes;
+    private AlarmDataSource mDataSource;
 
 
     @Override
@@ -42,6 +45,7 @@ public class EditAlarm extends AppCompatActivity {
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        mDataSource = new AlarmDataSource(this);
 
 
     }
@@ -70,6 +74,9 @@ public class EditAlarm extends AppCompatActivity {
         } else {
             alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         }
+
+        Alarm alarm = new Alarm(mHour, mMinutes);
+        mDataSource.create(alarm);
 
     }
 
