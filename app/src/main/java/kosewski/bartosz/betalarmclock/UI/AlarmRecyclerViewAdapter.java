@@ -1,5 +1,7 @@
 package kosewski.bartosz.betalarmclock.UI;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,23 +10,23 @@ import android.widget.TextView;
 
 import kosewski.bartosz.betalarmclock.Alarm;
 import kosewski.bartosz.betalarmclock.R;
+import kosewski.bartosz.betalarmclock.Utils.Constants;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Alarm} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
+ *
  */
 public class AlarmRecyclerViewAdapter extends RecyclerView.Adapter<AlarmRecyclerViewAdapter.ViewHolder> {
 
     private final List<Alarm> mAlarms;
-    private final OnListFragmentInteractionListener mListener;
+    private final Context mContext;
 
-    public AlarmRecyclerViewAdapter(List<Alarm> items, OnListFragmentInteractionListener listener) {
+    public AlarmRecyclerViewAdapter(List<Alarm> items, Context context) {
         mAlarms = items;
-        mListener = listener;
+        mContext = context;
     }
 
 
@@ -37,8 +39,20 @@ public class AlarmRecyclerViewAdapter extends RecyclerView.Adapter<AlarmRecycler
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.bindAlarm(mAlarms.get(position));
+        holder.mView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Intent editIntent = new Intent(mContext, EditAlarm.class);
+                Alarm alarm = mAlarms.get(position);
+                editIntent.putExtra(Constants.ALARM, alarm);
+                editIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mContext.startActivity(editIntent);
+                return true;
+            }
+        });
+
     }
 
     @Override

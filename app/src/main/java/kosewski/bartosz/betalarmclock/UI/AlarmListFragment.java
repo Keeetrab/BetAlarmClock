@@ -1,6 +1,7 @@
 package kosewski.bartosz.betalarmclock.UI;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,8 +27,7 @@ import kosewski.bartosz.betalarmclock.UI.dummy.DummyContent;
  */
 public class AlarmListFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
-    private OnListFragmentInteractionListener mListener;
+
     private AlarmDataSource mDataSource;
     private Context mContext;
     private List<Alarm> mAlarmList;
@@ -39,7 +39,7 @@ public class AlarmListFragment extends Fragment {
      */
     public AlarmListFragment() {}
 
-    // TODO: Customize parameter initialization
+
     @SuppressWarnings("unused")
     public static AlarmListFragment newInstance() {
         AlarmListFragment fragment = new AlarmListFragment();
@@ -53,13 +53,14 @@ public class AlarmListFragment extends Fragment {
         mDataSource = new AlarmDataSource(mContext);
         mAlarmList = mDataSource.readAlarms();
 
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
         mAlarmList = mDataSource.readAlarms();
-        mRecyclerView.setAdapter(new AlarmRecyclerViewAdapter(mAlarmList, mListener));
+        mRecyclerView.setAdapter(new AlarmRecyclerViewAdapter(mAlarmList,mContext));
     }
 
     @Override
@@ -72,11 +73,10 @@ public class AlarmListFragment extends Fragment {
             Context context = view.getContext();
             mRecyclerView = (RecyclerView) view;
             mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-            mRecyclerView.setAdapter(new AlarmRecyclerViewAdapter(mAlarmList, mListener));
+            mRecyclerView.setAdapter(new AlarmRecyclerViewAdapter(mAlarmList, mContext));
         }
         return view;
     }
-
 
     /*@Override
     public void onAttach(Context context) {
@@ -92,7 +92,6 @@ public class AlarmListFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     /**
