@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TimePicker;
@@ -23,6 +24,7 @@ import kosewski.bartosz.betalarmclock.R;
 import kosewski.bartosz.betalarmclock.Utils.Constants;
 
 public class EditAlarm extends AppCompatActivity {
+    private static final String TAG = EditAlarm.class.getSimpleName();
     private TimePicker mTimePicker;
     private ImageView mDeleteButton;
     private int mHour;
@@ -68,9 +70,6 @@ public class EditAlarm extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mAlarm != null) {
-                    deleteAlarm(mAlarm);
-                }
                 setAlarm();
                 finish();
             }
@@ -81,9 +80,8 @@ public class EditAlarm extends AppCompatActivity {
     }
 
     private void deleteAlarm(Alarm alarm) {
+        cancelAlarms();
         mDataSource.delete(alarm.getId());
-
-
     }
 
     private void getEditedAlarmData() {
@@ -98,7 +96,7 @@ public class EditAlarm extends AppCompatActivity {
         //Cancel all alarms first
         cancelAlarms();
 
-        //Create new alarm
+        //Create new alarm or update current one
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             mHour = mTimePicker.getHour();
@@ -108,10 +106,15 @@ public class EditAlarm extends AppCompatActivity {
             mMinutes = mTimePicker.getCurrentMinute();
         }
 
+        if(mAlarm != null){
+            mAlarm.setHour(mHour);
+            mAlarm.setMinutes(mMinutes);
 
-        Alarm alarm = new Alarm(mHour, mMinutes);
-        mDataSource.create(alarm);
-
+            mDataSource.update(mAlarm);
+        } else {
+            Alarm alarm = new Alarm(mHour, mMinutes);
+            mDataSource.create(alarm);
+        }
         //Set all alarms
 
         setAlarms();
@@ -123,11 +126,11 @@ public class EditAlarm extends AppCompatActivity {
         if(alarms != null) {
             for(Alarm alarm : alarms){
                 PendingIntent pendingIntent = createPendingIntent(EditAlarm.this, alarm);
+                Log.i(TAG, "Canceling alarm: " + alarm.getId() + "Time: " + alarm.getHour() + ":" + alarm.getMinutes());
 
                 AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
                 alarmManager.cancel(pendingIntent);
 
-                //TODO nie wylacza alarmow
             }
         }
     }
@@ -145,6 +148,7 @@ public class EditAlarm extends AppCompatActivity {
             AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
             
             PendingIntent pendingIntent = createPendingIntent(EditAlarm.this, alarm);
+            Log.i(TAG, "Setting Alarm: " + alarm.getId() + "Time: " + alarm.getHour() + ":" + alarm.getMinutes());
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);

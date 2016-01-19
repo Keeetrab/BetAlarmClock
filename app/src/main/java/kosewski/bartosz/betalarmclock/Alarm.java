@@ -64,7 +64,7 @@ public class Alarm implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(mHour);
         dest.writeInt(mMinutes);
-        dest.writeInt(mId);
+        dest.writeLong(mId);
     }
 
     public static final Creator<Alarm> CREATOR = new Creator<Alarm>() {
