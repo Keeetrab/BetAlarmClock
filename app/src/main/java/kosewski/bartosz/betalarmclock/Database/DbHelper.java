@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
+import android.util.Log;
 
 /**
  * Created by Bartosz on 06.01.2016.
@@ -12,15 +13,19 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
     private static final String DB_NAME = "alarms.db";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 3;
     public static final String ALARMS_TABLE = "ALARMS";
     public static final String COLUMN_ALARM_HOUR = "HOUR";
     public static final String COLUMN_ALARM_MINUTES = "MINUTES";
+    public static final String COLUMN_ALARM_REPEATING_DAYS = "REPEATING_DAYS";
+    public static final String COLUMN_ALARM_IS_ENABLED = "IS_ENABLED";
 
     private static String CREATE_ALARMS =
             "CREATE TABLE " + ALARMS_TABLE + "(" + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     COLUMN_ALARM_HOUR + " INTEGER, " +
-                    COLUMN_ALARM_MINUTES + " INTEGER)";
+                    COLUMN_ALARM_MINUTES + " INTEGER, " +
+                    COLUMN_ALARM_REPEATING_DAYS + " TEXT, " +
+                    COLUMN_ALARM_IS_ENABLED + " INTEGER)";
 
     public DbHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -33,6 +38,9 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        Log.w(DbHelper.class.getSimpleName(),
+                "Upgrading database from version " + oldVersion + " to " + newVersion);
+        db.execSQL("DROP TABLE IF EXISTS " + ALARMS_TABLE);
+        onCreate(db);
     }
 }

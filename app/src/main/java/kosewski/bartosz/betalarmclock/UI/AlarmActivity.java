@@ -16,6 +16,7 @@ import kosewski.bartosz.betalarmclock.R;
 
 public class AlarmActivity extends AppCompatActivity {
     private Vibrator mVibrator;
+    private Ringtone mRingtone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +34,8 @@ public class AlarmActivity extends AppCompatActivity {
         if (alarmUri == null) {
             alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         }
-        Ringtone ringtone = RingtoneManager.getRingtone(this, alarmUri);
-        ringtone.play();
+        mRingtone = RingtoneManager.getRingtone(this, alarmUri);
+        mRingtone.play();
         mVibrator = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
         long[] pattern = { 0, 300, 200, 300, 100, 100 };
         mVibrator.vibrate(pattern, 0);
@@ -45,6 +46,7 @@ public class AlarmActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                         mVibrator.cancel();
+                        mRingtone.stop();
                         finish();
             }
         });

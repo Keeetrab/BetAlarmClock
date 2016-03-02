@@ -5,11 +5,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import kosewski.bartosz.betalarmclock.Alarm;
+import kosewski.bartosz.betalarmclock.Utils.GeneralUtilities;
 
 /**
  * Created by Bartosz on 11.01.2016.
@@ -29,17 +31,22 @@ public class AlarmDataSource {
         SQLiteDatabase db = open();
         db.beginTransaction();
 
-        ContentValues values = new ContentValues();
-
-        values.put(mDbHelper.COLUMN_ALARM_HOUR, alarm.getHour());
-        values.put(mDbHelper.COLUMN_ALARM_MINUTES, alarm.getMinutes());
-
+        ContentValues values = setAlarmValues(alarm);
         db.insert(mDbHelper.ALARMS_TABLE, null, values);
 
         db.setTransactionSuccessful();
         db.endTransaction();
         db.close();
     }
+
+    private int isAlarmEnabled(Alarm alarm) {
+        if(alarm.isEnabled()){
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
 
     public List<Alarm> readAlarms() {
         SQLiteDatabase db = open();
@@ -50,10 +57,13 @@ public class AlarmDataSource {
 
         if(cursor.moveToFirst()){
             do {
+
                 Alarm alarm = new Alarm (
                         getIntFromColumnName(cursor, mDbHelper.COLUMN_ALARM_HOUR),
                         getIntFromColumnName(cursor, mDbHelper.COLUMN_ALARM_MINUTES),
-                        getIntFromColumnName(cursor, BaseColumns._ID));
+                        getIntFromColumnName(cursor, BaseColumns._ID),
+                        daysFromStringToBoolean(cursor),
+                        getIntFromColumnName(cursor,mDbHelper.COLUMN_ALARM_IS_ENABLED));
                 alarmList.add(alarm);
             } while (cursor.moveToNext());
         }
@@ -62,13 +72,23 @@ public class AlarmDataSource {
         return alarmList;
     }
 
+    private boolean[] daysFromStringToBoolean(Cursor cursor) {
+        String repeatingDays = getStringFromColumnName(cursor,mDbHelper.COLUMN_ALARM_REPEATING_DAYS);
+        return GeneralUtilities.daysStringToBoolean(repeatingDays);
+    }
+
+    private String daysFromBooleanToString(Alarm alarm) {
+        boolean[] daysBoolean = alarm.getDays();
+
+        return GeneralUtilities.daysBooleanToString(daysBoolean);
+    }
+
+
     public void update(Alarm alarm){
         SQLiteDatabase db = open();
         db.beginTransaction();
 
-        ContentValues updateAlarmValues = new ContentValues();
-        updateAlarmValues.put(mDbHelper.COLUMN_ALARM_HOUR, alarm.getHour());
-        updateAlarmValues.put(mDbHelper.COLUMN_ALARM_MINUTES, alarm.getMinutes());
+        ContentValues updateAlarmValues = setAlarmValues(alarm);
 
         String where = BaseColumns._ID + " = ?";
         String[] whereArgs = {Integer.toString(alarm.getId())};
@@ -77,6 +97,17 @@ public class AlarmDataSource {
         db.setTransactionSuccessful();
         db.endTransaction();
         db.close();
+    }
+
+    private ContentValues setAlarmValues(Alarm alarm) {
+        ContentValues values = new ContentValues();
+
+        values.put(mDbHelper.COLUMN_ALARM_HOUR, alarm.getHour());
+        values.put(mDbHelper.COLUMN_ALARM_MINUTES, alarm.getMinutes());
+        values.put(mDbHelper.COLUMN_ALARM_REPEATING_DAYS, daysFromBooleanToString(alarm));
+        values.put(mDbHelper.COLUMN_ALARM_IS_ENABLED, isAlarmEnabled(alarm));
+
+        return values;
     }
 
     public void delete(int alarmId){

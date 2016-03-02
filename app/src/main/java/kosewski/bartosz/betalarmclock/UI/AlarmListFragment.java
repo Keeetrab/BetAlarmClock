@@ -17,12 +17,11 @@ import kosewski.bartosz.betalarmclock.Alarm;
 import kosewski.bartosz.betalarmclock.Database.AlarmDataSource;
 import kosewski.bartosz.betalarmclock.Database.DbHelper;
 import kosewski.bartosz.betalarmclock.R;
-import kosewski.bartosz.betalarmclock.UI.dummy.DummyContent;
 
 /**
  * A fragment representing a list of Items.
  * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
+ * Activities containing this fragment MUST implement the {OnListFragmentInteractionListener}
  * interface.
  */
 public class AlarmListFragment extends Fragment {

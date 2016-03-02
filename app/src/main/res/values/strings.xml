@@ -3,4 +3,11 @@
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="title_activity_edit_alarm">Edit Alarm</string>
+    <string name="day_monday">Mon</string>
+    <string name="day_tuesday">Tue</string>
+    <string name="day_wednesday">Wed</string>
+    <string name="day_thusday">Thu</string>
+    <string name="day_friday">Fri</string>
+    <string name="day_saturday">Sat</string>
+    <string name="day_sunday">Sun</string>
 </resources>

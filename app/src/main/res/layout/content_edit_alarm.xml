@@ -14,7 +14,6 @@
     tools:showIn="@layout/activity_edit_alarm">
 
     <TimePicker
-        android:timePickerMode="spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/timePicker"
@@ -30,4 +29,109 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:src="@drawable/ic_delete_black_36dp"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/deleteImageView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/weekdaysLayout"
+        android:weightSum="7">
+
+        <LinearLayout
+            style="@style/day_linearlayout">
+
+
+            <CheckBox
+                android:id="@+id/checkBox1"
+                style="@style/day_checkbox"/>
+
+            <TextView
+                android:text="@string/day_monday"
+                android:id="@+id/textView1"
+                style="@style/day_textview"/>
+        </LinearLayout>
+        <LinearLayout
+            style="@style/day_linearlayout">
+
+
+            <CheckBox
+                android:id="@+id/checkBox2"
+                style="@style/day_checkbox"/>
+
+            <TextView
+                android:text="@string/day_tuesday"
+                android:id="@+id/textView2"
+                style="@style/day_textview"/>
+        </LinearLayout>
+        <LinearLayout
+            style="@style/day_linearlayout">
+
+
+            <CheckBox
+                android:id="@+id/checkBox3"
+                style="@style/day_checkbox"/>
+
+            <TextView
+                android:text="@string/day_wednesday"
+                android:id="@+id/textView3"
+                style="@style/day_textview"/>
+        </LinearLayout>
+        <LinearLayout
+            style="@style/day_linearlayout">
+
+
+            <CheckBox
+                android:id="@+id/checkBox4"
+                style="@style/day_checkbox"/>
+
+            <TextView
+                android:text="@string/day_thusday"
+                android:id="@+id/textView4"
+                style="@style/day_textview"/>
+        </LinearLayout>
+        <LinearLayout
+            style="@style/day_linearlayout">
+
+
+            <CheckBox
+                android:id="@+id/checkBox5"
+                style="@style/day_checkbox"/>
+
+            <TextView
+                android:text="@string/day_friday"
+                android:id="@+id/textView5"
+                style="@style/day_textview"/>
+        </LinearLayout>
+        <LinearLayout
+            style="@style/day_linearlayout">
+
+
+            <CheckBox
+                android:id="@+id/checkBox6"
+                style="@style/day_checkbox"/>
+
+            <TextView
+                android:text="@string/day_saturday"
+                android:id="@+id/textView6"
+                style="@style/day_textview"/>
+        </LinearLayout>
+        <LinearLayout
+            style="@style/day_linearlayout">
+
+
+            <CheckBox
+                android:id="@+id/checkBox7"
+                style="@style/day_checkbox"/>
+
+            <TextView
+                android:text="@string/day_sunday"
+                android:id="@+id/textView7"
+                style="@style/day_textview"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
 </RelativeLayout>

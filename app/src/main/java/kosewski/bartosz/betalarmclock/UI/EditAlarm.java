@@ -1,32 +1,30 @@
 package kosewski.bartosz.betalarmclock.UI;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TimePicker;
 
-import java.util.Calendar;
 import java.util.List;
 
 import kosewski.bartosz.betalarmclock.Alarm;
-import kosewski.bartosz.betalarmclock.AlarmReceiver;
 import kosewski.bartosz.betalarmclock.Database.AlarmDataSource;
 import kosewski.bartosz.betalarmclock.R;
+import kosewski.bartosz.betalarmclock.Scheduling.AlarmScheduler;
 import kosewski.bartosz.betalarmclock.Utils.Constants;
 
 public class EditAlarm extends AppCompatActivity {
     private static final String TAG = EditAlarm.class.getSimpleName();
     private TimePicker mTimePicker;
     private ImageView mDeleteButton;
+    private CheckBox[] mDayCheckBoxes;
+
     private int mHour;
     private int mMinutes;
     private Alarm mAlarm;
@@ -38,16 +36,18 @@ public class EditAlarm extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getEditedAlarmData();
+        mAlarm = getEditedAlarmData();
 
         // UI
         setContentView(R.layout.activity_edit_alarm);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mTimePicker = (TimePicker) findViewById(R.id.timePicker);
+        setDayCheckboxes();
+
                 // Editing existing Alarm
         if(mAlarm != null) {
-
+            //Setting timepicker
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 mTimePicker.setHour(mAlarm.getHour());
                 mTimePicker.setMinute(mAlarm.getMinutes());
@@ -55,13 +55,20 @@ public class EditAlarm extends AppCompatActivity {
                 mTimePicker.setCurrentHour(mAlarm.getHour());
                 mTimePicker.setCurrentMinute(mAlarm.getMinutes());
             }
+            //Setting days
+            boolean[] days = new boolean[7];
+            System.arraycopy(mAlarm.getDays(), 0 , days, 0, days.length);
+
+            for(int i = 0; i<7; i++){
+                mDayCheckBoxes[i].setChecked(days[i]);
+            }
+
 
             mDeleteButton = (ImageView) findViewById(R.id.deleteImageView);
             mDeleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    deleteAlarm(mAlarm);
-                    setAlarms();
+                    AlarmScheduler.deleteAlarm(EditAlarm.this, mAlarm);
                     finish();
                 }
             });
@@ -79,22 +86,28 @@ public class EditAlarm extends AppCompatActivity {
 
     }
 
-    private void deleteAlarm(Alarm alarm) {
-        cancelAlarms();
-        mDataSource.delete(alarm.getId());
+    private void setDayCheckboxes() {
+        mDayCheckBoxes = new CheckBox[7];
+        for(int i = 1; i < 8; i++){
+            String boxName = "checkBox" + i;
+            CheckBox checkBox = (CheckBox) findViewById(getResources().getIdentifier(boxName, "id", getPackageName()));
+            mDayCheckBoxes[i-1] = checkBox;
+        }
     }
 
-    private void getEditedAlarmData() {
+    private Alarm getEditedAlarmData() {
         Intent intent = getIntent();
         if(intent.hasExtra(Constants.ALARM)){
-            mAlarm = intent.getParcelableExtra(Constants.ALARM);
+            Alarm alarm = intent.getParcelableExtra(Constants.ALARM);
+            return alarm;
+        } else {
+            return null;
         }
-
     }
 
     private void setAlarm() {
         //Cancel all alarms first
-        cancelAlarms();
+        AlarmScheduler.cancelAlarms(this);
 
         //Create new alarm or update current one
 
@@ -109,61 +122,24 @@ public class EditAlarm extends AppCompatActivity {
         if(mAlarm != null){
             mAlarm.setHour(mHour);
             mAlarm.setMinutes(mMinutes);
+            mAlarm.setDays(getRepeatingDays());
 
             mDataSource.update(mAlarm);
         } else {
-            Alarm alarm = new Alarm(mHour, mMinutes);
+            Alarm alarm = new Alarm(mHour, mMinutes, getRepeatingDays());
             mDataSource.create(alarm);
         }
         //Set all alarms
 
-        setAlarms();
+        AlarmScheduler.setAlarms(this);
     }
 
-    private void cancelAlarms() {
-        List<Alarm> alarms = mDataSource.readAlarms();
-
-        if(alarms != null) {
-            for(Alarm alarm : alarms){
-                PendingIntent pendingIntent = createPendingIntent(EditAlarm.this, alarm);
-                Log.i(TAG, "Canceling alarm: " + alarm.getId() + "Time: " + alarm.getHour() + ":" + alarm.getMinutes());
-
-                AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-                alarmManager.cancel(pendingIntent);
-
-            }
+    private boolean[] getRepeatingDays() {
+        boolean[] days = new boolean[7];
+        for(int i = 0; i<7; i++){
+            days[i] = mDayCheckBoxes[i].isChecked();
         }
+
+        return days;
     }
-
-    private void setAlarms() {
-        List<Alarm> alarms = mDataSource.readAlarms();
-
-        for(Alarm alarm : alarms) {
-
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.HOUR_OF_DAY, alarm.getHour());
-            calendar.set(Calendar.MINUTE, alarm.getMinutes());
-            calendar.set(Calendar.SECOND, 0);
-
-            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-            
-            PendingIntent pendingIntent = createPendingIntent(EditAlarm.this, alarm);
-            Log.i(TAG, "Setting Alarm: " + alarm.getId() + "Time: " + alarm.getHour() + ":" + alarm.getMinutes());
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            } else {
-                alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            }
-        }
-    }
-
-    private PendingIntent createPendingIntent(Context context, Alarm alarm) {
-        
-        Intent alarmIntent = new Intent(EditAlarm.this, AlarmReceiver.class);
-        alarmIntent.putExtra("ID", alarm.getId());
-        
-        return PendingIntent.getBroadcast(context, alarm.getId(), alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-    }
-
 }
