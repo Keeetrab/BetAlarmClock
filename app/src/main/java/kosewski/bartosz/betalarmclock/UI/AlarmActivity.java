@@ -1,6 +1,7 @@
 package kosewski.bartosz.betalarmclock.UI;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -12,11 +13,16 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 
+import kosewski.bartosz.betalarmclock.Alarm;
+import kosewski.bartosz.betalarmclock.Database.AlarmDataSource;
 import kosewski.bartosz.betalarmclock.R;
+import kosewski.bartosz.betalarmclock.Scheduling.AlarmScheduler;
 
 public class AlarmActivity extends AppCompatActivity {
     private Vibrator mVibrator;
     private Ringtone mRingtone;
+    private AlarmDataSource mDataSource;
+    private Alarm mAlarm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +33,8 @@ public class AlarmActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
         win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+
+        getAlarm();
 
 
         // The ringing effects
@@ -45,16 +53,43 @@ public class AlarmActivity extends AppCompatActivity {
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                        mVibrator.cancel();
-                        mRingtone.stop();
-                        finish();
+                        cancelAlarm();
             }
         });
     }
 
+
+
     @Override
     protected void onPause() {
         super.onPause();
+        cancelAlarm();
+    }
+
+    private void cancelAlarm() {
+        mVibrator.cancel();
+        mRingtone.stop();
+
+        if(mAlarm.isOneShot()){
+            mAlarm.setIsEnabled(false);
+            mDataSource.update(mAlarm);
+        }
+
+        //Schedule new alarms
+        AlarmScheduler.cancelAlarms(this);
+        AlarmScheduler.setAlarms(this);
+
+
         finish();
     }
+
+
+    private void getAlarm() {
+        Intent intent = getIntent();
+        int alarmId = intent.getIntExtra("ID", -1);
+
+        mDataSource = new AlarmDataSource(this);
+        mAlarm = mDataSource.readAlarmById(alarmId);
+    }
+
 }

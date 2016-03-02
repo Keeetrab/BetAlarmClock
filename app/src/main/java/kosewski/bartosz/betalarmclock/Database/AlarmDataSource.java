@@ -72,6 +72,27 @@ public class AlarmDataSource {
         return alarmList;
     }
 
+    public Alarm readAlarmById(int id){
+        SQLiteDatabase db = open();
+        String sql = "SELECT * FROM " + mDbHelper.ALARMS_TABLE + " WHERE " + BaseColumns._ID + " = " + id;
+        Alarm alarm = null;
+
+        Cursor cursor = db.rawQuery(sql, null);
+        if(cursor.moveToFirst()){
+                alarm = new Alarm (
+                        getIntFromColumnName(cursor, mDbHelper.COLUMN_ALARM_HOUR),
+                        getIntFromColumnName(cursor, mDbHelper.COLUMN_ALARM_MINUTES),
+                        getIntFromColumnName(cursor, BaseColumns._ID),
+                        daysFromStringToBoolean(cursor),
+                        getIntFromColumnName(cursor,mDbHelper.COLUMN_ALARM_IS_ENABLED));
+        }
+
+        cursor.close();
+        db.close();
+
+        return alarm;
+    }
+
     private boolean[] daysFromStringToBoolean(Cursor cursor) {
         String repeatingDays = getStringFromColumnName(cursor,mDbHelper.COLUMN_ALARM_REPEATING_DAYS);
         return GeneralUtilities.daysStringToBoolean(repeatingDays);

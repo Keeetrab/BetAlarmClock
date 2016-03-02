@@ -28,7 +28,9 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         Toast.makeText(context, "Alarm dziala", Toast.LENGTH_LONG).show();
         int id =  intent.getIntExtra("ID", -1);
         Log.i(TAG, "Alarm launched: id: " + id);
+
         Intent alarmIntent = new Intent(context, AlarmActivity.class);
+        alarmIntent.putExtra("ID", id);
         alarmIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(alarmIntent);
     }
