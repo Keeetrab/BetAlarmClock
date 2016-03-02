@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,10 +20,16 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
+import com.shephertz.app42.paas.sdk.android.App42API;
+import com.shephertz.app42.paas.sdk.android.App42CallBack;
+import com.shephertz.app42.paas.sdk.android.user.User;
+import com.shephertz.app42.paas.sdk.android.user.UserService;
+
 import kosewski.bartosz.betalarmclock.R;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -62,6 +69,22 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, EditAlarm.class);
                 startActivity(intent);
+            }
+        });
+
+        String userName = "Bartek";
+        String pwd = "admin1";
+        String emailId = "bartekkosewski@gmail.com";
+        UserService userService = App42API.buildUserService();
+        userService.createUser(userName, pwd, emailId, new App42CallBack() {
+            public void onSuccess(Object response) {
+                User user = (User) response;
+                Log.i(TAG, "userName is " + user.getUserName());
+                Log.i(TAG, "emailId is " + user.getEmail());
+            }
+
+            public void onException(Exception ex) {
+                Log.i(TAG, "Exception Message" + ex.getMessage());
             }
         });
 
