@@ -6,10 +6,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.shephertz.app42.paas.sdk.android.App42API;
-import com.shephertz.app42.paas.sdk.android.App42CallBack;
-import com.shephertz.app42.paas.sdk.android.user.User;
-import com.shephertz.app42.paas.sdk.android.user.UserService;
+import com.kinvey.android.Client;
+import com.kinvey.android.callback.KinveyPingCallback;
+
 
 /**
  * Created by Bartosz on 06.01.2016.
@@ -18,10 +17,28 @@ public class BetAlarmClock extends Application {
 
     private static final String TAG = BetAlarmClock.class.getSimpleName();
     public static SQLiteDatabase mDatabase;
+    private Client mKinveyClient = null;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        App42API.initialize(this, "4f14819a0826ae695083257ff9f5bb2f4b78976b1b6f0d43e8e53a86bd6b0b27", "7edc0797bd9b34f08b9cc30b2f3491d8842bfef2e2972471c480e407945fb456");
+
+        mKinveyClient.ping(new KinveyPingCallback() {
+            public void onFailure(Throwable t) {
+                Log.e(TAG, "Kinvey Ping Failed", t);
+            }
+
+            public void onSuccess(Boolean b) {
+                Log.d(TAG, "Kinvey Ping Success");
+            }
+        });
+    }
+
+    public Client getClient() {
+        if(mKinveyClient == null){
+            mKinveyClient = new Client.Builder("kid_bkH7gX3Gkb","a21e535a533a4e9e8b1d093a1d8081fe",(getApplicationContext())).build();
+        }
+
+        return mKinveyClient;
     }
 }

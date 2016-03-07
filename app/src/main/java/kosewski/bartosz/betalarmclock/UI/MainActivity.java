@@ -20,11 +20,9 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
-import com.shephertz.app42.paas.sdk.android.App42API;
-import com.shephertz.app42.paas.sdk.android.App42CallBack;
-import com.shephertz.app42.paas.sdk.android.user.User;
-import com.shephertz.app42.paas.sdk.android.user.UserService;
+import com.kinvey.android.Client;
 
+import kosewski.bartosz.betalarmclock.BetAlarmClock;
 import kosewski.bartosz.betalarmclock.R;
 
 public class MainActivity extends AppCompatActivity {
@@ -50,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        checkActiveUser();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
@@ -72,23 +72,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        String userName = "Bartek";
-        String pwd = "admin1";
-        String emailId = "bartekkosewski@gmail.com";
-        UserService userService = App42API.buildUserService();
-        userService.createUser(userName, pwd, emailId, new App42CallBack() {
-            public void onSuccess(Object response) {
-                User user = (User) response;
-                Log.i(TAG, "userName is " + user.getUserName());
-                Log.i(TAG, "emailId is " + user.getEmail());
-            }
-
-            public void onException(Exception ex) {
-                Log.i(TAG, "Exception Message" + ex.getMessage());
-            }
-        });
-
     }
+
 
 
     @Override
@@ -111,6 +96,21 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    private void checkActiveUser() {
+        final Client mKinveyClient = new Client.Builder("kid_bkH7gX3Gkb","a21e535a533a4e9e8b1d093a1d8081fe"
+                , this.getApplicationContext()).build();
+
+        if(!mKinveyClient.user().isUserLoggedIn()){
+            navigateToLogin();
+        }
+
+    }
+
+    private void navigateToLogin() {
+        //TODO jezeli uzytkownik pusty wyrzuc do loginu
     }
 
     /**
