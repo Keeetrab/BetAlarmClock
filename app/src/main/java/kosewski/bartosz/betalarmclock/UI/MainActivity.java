@@ -24,6 +24,7 @@ import com.kinvey.android.Client;
 
 import kosewski.bartosz.betalarmclock.BetAlarmClock;
 import kosewski.bartosz.betalarmclock.R;
+import kosewski.bartosz.betalarmclock.Utils.Constants;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
+    private Client mKinveyClient;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -91,17 +93,22 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        switch (id) {
+            case R.id.action_settings:
+                return true;
+            case R.id.logout:
+                mKinveyClient.user().logout().execute();
+                checkActiveUser();
+                return true;
 
+        }
         return super.onOptionsItemSelected(item);
     }
 
 
     private void checkActiveUser() {
-        final Client mKinveyClient = new Client.Builder("kid_bkH7gX3Gkb","a21e535a533a4e9e8b1d093a1d8081fe"
-                , this.getApplicationContext()).build();
+        mKinveyClient = new Client.Builder(Constants.APP_ID,Constants.APP_SECRET
+                , getApplicationContext()).build();
 
         if(!mKinveyClient.user().isUserLoggedIn()){
             navigateToLogin();
@@ -110,7 +117,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void navigateToLogin() {
-        //TODO jezeli uzytkownik pusty wyrzuc do loginu
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 
     /**

@@ -48,8 +48,16 @@
         <activity android:name=".UI.AlarmActivity">
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name=".UI.LoginActivity"
             android:label="@string/title_activity_login">
+        </activity>
+        <activity
+            android:name=".UI.SignUpActivity"
+            android:label="@string/title_activity_sign_up"
+            android:parentActivityName=".UI.LoginActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="kosewski.bartosz.betalarmclock.UI.LoginActivity"/>
         </activity>
     </application>
 
