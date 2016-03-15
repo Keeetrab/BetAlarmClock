@@ -349,8 +349,20 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
             mKinveyClient.user().create(mUsername, mPassword, new KinveyUserCallback() {
                 @Override
                 public void onSuccess(User user) {
-                    //TODO zrobic to
+                    //TODO dodac maila
                     user.put("email", mEmail);
+                    mKinveyClient.user().update(new KinveyUserCallback() {
+                        @Override
+                        public void onSuccess(User user) {
+
+                        }
+
+                        @Override
+                        public void onFailure(Throwable throwable) {
+
+                        }
+                    });
+
                     Toast.makeText(getApplicationContext(), "Hello! " + user.getUsername(), Toast.LENGTH_SHORT).show();
 
                     Intent intent = new Intent(SignUpActivity.this, MainActivity.class);

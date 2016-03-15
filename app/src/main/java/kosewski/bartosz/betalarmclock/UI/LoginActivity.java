@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.kinvey.android.Client;
 import com.kinvey.android.callback.KinveyUserCallback;
 import com.kinvey.java.User;
+import com.kinvey.java.model.KinveyReference;
 
 import java.util.ArrayList;
 import java.util.List;
