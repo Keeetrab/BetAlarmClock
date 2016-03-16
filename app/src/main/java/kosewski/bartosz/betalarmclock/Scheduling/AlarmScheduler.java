@@ -9,9 +9,8 @@ import android.util.Log;
 
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
-import kosewski.bartosz.betalarmclock.Alarm;
+import kosewski.bartosz.betalarmclock.Model.Alarm;
 import kosewski.bartosz.betalarmclock.AlarmReceiver;
 import kosewski.bartosz.betalarmclock.Database.AlarmDataSource;
 

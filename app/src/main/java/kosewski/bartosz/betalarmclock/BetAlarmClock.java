@@ -1,6 +1,7 @@
 package kosewski.bartosz.betalarmclock;
 
 import android.app.Application;
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.preference.PreferenceManager;
@@ -10,6 +11,7 @@ import com.kinvey.android.Client;
 import com.kinvey.android.callback.KinveyPingCallback;
 
 import kosewski.bartosz.betalarmclock.Utils.Constants;
+import kosewski.bartosz.betalarmclock.Utils.KinveyConstants;
 
 
 /**
@@ -24,12 +26,16 @@ public class BetAlarmClock extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        final Client mKinveyClient = new Client.Builder(Constants.APP_ID,Constants.APP_SECRET
-                , this.getApplicationContext()).build();
 
     }
 
-    public static Client getClient() {
+    public static Client getClient(Context context) {
+        if (mKinveyClient == null){
+            mKinveyClient = new Client.Builder(KinveyConstants.APP_ID,KinveyConstants.APP_SECRET
+                    , context.getApplicationContext()).build();
+        }
+
+
         return mKinveyClient;
     }
 }

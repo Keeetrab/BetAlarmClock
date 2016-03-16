@@ -42,6 +42,8 @@ import java.util.List;
 import kosewski.bartosz.betalarmclock.BetAlarmClock;
 import kosewski.bartosz.betalarmclock.R;
 import kosewski.bartosz.betalarmclock.Utils.Constants;
+import kosewski.bartosz.betalarmclock.Utils.KinveyConstants;
+import kosewski.bartosz.betalarmclock.Utils.KinveyUtils;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -327,8 +329,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
-            final Client mKinveyClient = new Client.Builder(Constants.APP_ID,Constants.APP_SECRET
-                    , getApplicationContext()).build();
+            final Client mKinveyClient = KinveyUtils.getClient(LoginActivity.this);
 
             mKinveyClient.user().login(mUsername, mPassword, new KinveyUserCallback() {
                 @Override

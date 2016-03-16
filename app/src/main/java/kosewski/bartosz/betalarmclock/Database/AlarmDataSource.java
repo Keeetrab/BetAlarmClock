@@ -5,12 +5,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
-import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import kosewski.bartosz.betalarmclock.Alarm;
+import kosewski.bartosz.betalarmclock.Model.Alarm;
 import kosewski.bartosz.betalarmclock.Utils.GeneralUtilities;
 
 /**

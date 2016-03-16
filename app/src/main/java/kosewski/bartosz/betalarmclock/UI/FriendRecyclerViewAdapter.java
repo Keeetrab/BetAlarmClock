@@ -6,7 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import kosewski.bartosz.betalarmclock.UI.ItemFragment.OnListFragmentInteractionListener;
+import kosewski.bartosz.betalarmclock.R;
+import kosewski.bartosz.betalarmclock.UI.FriendFragment.OnListFragmentInteractionListener;
 import kosewski.bartosz.betalarmclock.UI.dummy.DummyContent.DummyItem;
 
 import java.util.List;
@@ -29,15 +30,13 @@ public class FriendRecyclerViewAdapter extends RecyclerView.Adapter<FriendRecycl
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_item, parent, false);
+                .inflate(R.layout.fragment_friend_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,11 +66,6 @@ public class FriendRecyclerViewAdapter extends RecyclerView.Adapter<FriendRecycl
             mView = view;
             mIdView = (TextView) view.findViewById(R.id.id);
             mContentView = (TextView) view.findViewById(R.id.content);
-        }
-
-        @Override
-        public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
         }
     }
 }

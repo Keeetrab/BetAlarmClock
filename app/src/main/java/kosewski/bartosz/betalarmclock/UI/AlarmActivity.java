@@ -13,7 +13,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 
-import kosewski.bartosz.betalarmclock.Alarm;
+import kosewski.bartosz.betalarmclock.Model.Alarm;
 import kosewski.bartosz.betalarmclock.Database.AlarmDataSource;
 import kosewski.bartosz.betalarmclock.R;
 import kosewski.bartosz.betalarmclock.Scheduling.AlarmScheduler;

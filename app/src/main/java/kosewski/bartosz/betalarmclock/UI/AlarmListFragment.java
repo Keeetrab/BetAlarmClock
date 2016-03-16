@@ -1,7 +1,6 @@
 package kosewski.bartosz.betalarmclock.UI;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,12 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import kosewski.bartosz.betalarmclock.Alarm;
+import kosewski.bartosz.betalarmclock.Model.Alarm;
 import kosewski.bartosz.betalarmclock.Database.AlarmDataSource;
-import kosewski.bartosz.betalarmclock.Database.DbHelper;
 import kosewski.bartosz.betalarmclock.R;
 
 /**

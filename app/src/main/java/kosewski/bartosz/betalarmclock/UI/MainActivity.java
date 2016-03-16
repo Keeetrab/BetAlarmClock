@@ -24,9 +24,12 @@ import com.kinvey.android.Client;
 
 import kosewski.bartosz.betalarmclock.BetAlarmClock;
 import kosewski.bartosz.betalarmclock.R;
+import kosewski.bartosz.betalarmclock.UI.dummy.DummyContent;
 import kosewski.bartosz.betalarmclock.Utils.Constants;
+import kosewski.bartosz.betalarmclock.Utils.KinveyConstants;
+import kosewski.bartosz.betalarmclock.Utils.KinveyUtils;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FriendFragment.OnListFragmentInteractionListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     /**
@@ -38,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-    private Client mKinveyClient;
+    public Client mKinveyClient;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -107,8 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void checkActiveUser() {
-        mKinveyClient = new Client.Builder(Constants.APP_ID,Constants.APP_SECRET
-                , getApplicationContext()).build();
+        mKinveyClient = KinveyUtils.getClient(this);
 
         if(!mKinveyClient.user().isUserLoggedIn()){
             navigateToLogin();
@@ -123,39 +125,9 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
+    @Override
+    public void onListFragmentInteraction(DummyContent.DummyItem item) {
 
-        public PlaceholderFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-            return rootView;
-        }
     }
 
     /**
@@ -176,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                 case 0:
                     return new AlarmListFragment();
                 case 1:
-                    return PlaceholderFragment.newInstance(position + 1);
+                    return new FriendFragment();
             }
             return null;
         }
@@ -193,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
                 case 0:
                     return "Alarms";
                 case 1:
-                    return "SECTION 2";
+                    return "Friends";
             }
             return null;
         }
