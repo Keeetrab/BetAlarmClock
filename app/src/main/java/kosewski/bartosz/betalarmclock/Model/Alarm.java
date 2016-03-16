@@ -1,9 +1,7 @@
-package kosewski.bartosz.betalarmclock;
+package kosewski.bartosz.betalarmclock.Model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import kosewski.bartosz.betalarmclock.Utils.GeneralUtilities;
 
 /**
  * Created by Bartosz on 18.12.2015.
