@@ -12,5 +12,5 @@ import kosewski.bartosz.betalarmclock.BetAlarmClock;
 public class KinveyConstants {
     public static final String APP_ID = "kid_bkH7gX3Gkb";
     public static final String APP_SECRET = "a21e535a533a4e9e8b1d093a1d8081fe";
-
+    public static final String FRIENDS = "Friends";
 }

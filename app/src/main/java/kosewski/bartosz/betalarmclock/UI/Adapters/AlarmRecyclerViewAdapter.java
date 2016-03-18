@@ -1,4 +1,4 @@
-package kosewski.bartosz.betalarmclock.UI;
+package kosewski.bartosz.betalarmclock.UI.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +15,7 @@ import kosewski.bartosz.betalarmclock.Model.Alarm;
 import kosewski.bartosz.betalarmclock.Database.AlarmDataSource;
 import kosewski.bartosz.betalarmclock.R;
 import kosewski.bartosz.betalarmclock.Scheduling.AlarmScheduler;
+import kosewski.bartosz.betalarmclock.UI.EditAlarm;
 import kosewski.bartosz.betalarmclock.Utils.Constants;
 
 import java.util.List;

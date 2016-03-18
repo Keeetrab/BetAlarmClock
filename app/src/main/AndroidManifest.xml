@@ -59,6 +59,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="kosewski.bartosz.betalarmclock.UI.LoginActivity"/>
         </activity>
+        <activity
+            android:name=".UI.AddFriendActivity"
+            android:label="@string/title_activity_add_friend"
+            android:parentActivityName=".UI.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="kosewski.bartosz.betalarmclock.UI.MainActivity"/>
+        </activity>
     </application>
 
 </manifest>

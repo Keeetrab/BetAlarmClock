@@ -1,0 +1,153 @@
+package kosewski.bartosz.betalarmclock.UI;
+
+import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.kinvey.android.AsyncUserDiscovery;
+import com.kinvey.android.Client;
+import com.kinvey.android.callback.KinveyUserCallback;
+import com.kinvey.android.callback.KinveyUserListCallback;
+import com.kinvey.java.User;
+import com.kinvey.java.model.KinveyReference;
+import com.kinvey.java.model.UserLookup;
+
+import kosewski.bartosz.betalarmclock.R;
+import kosewski.bartosz.betalarmclock.UI.Adapters.AddFriendRecyclerViewAdapter;
+import kosewski.bartosz.betalarmclock.UI.Adapters.FriendRecyclerViewAdapter;
+import kosewski.bartosz.betalarmclock.UI.dummy.DummyContent;
+import kosewski.bartosz.betalarmclock.Utils.KinveyConstants;
+import kosewski.bartosz.betalarmclock.Utils.KinveyUtils;
+
+public class AddFriendActivity extends AppCompatActivity {
+
+    private static final String TAG = AddFriendActivity.class.getSimpleName();
+    public User[] mUsers;
+    public EditText mSearchField;
+    public TextView mSearchedField;
+    public CheckBox mAddFriendCheckBox;
+    public ProgressBar mProgressBar;
+    public RecyclerView mRecyclerView;
+
+    public Client mKinveyClient;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_add_friend);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        mKinveyClient = KinveyUtils.getClient(this);
+        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
+        mProgressBar.setVisibility(View.INVISIBLE);
+        mSearchedField = (TextView) findViewById(R.id.searchedTextView);
+        mAddFriendCheckBox = (CheckBox) findViewById(R.id.addFriendCheckBox);
+        mAddFriendCheckBox.setVisibility(View.INVISIBLE);
+
+        // Lsit of current friends
+
+        //TODO  wlacyc recycler view
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setAdapter(new AddFriendRecyclerViewAdapter(mUsers));
+
+
+
+        //FAB
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Search Field
+
+        mSearchField = (EditText) findViewById(R.id.searchField);
+        mSearchField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mAddFriendCheckBox.setVisibility(View.INVISIBLE);
+                mProgressBar.setVisibility(View.VISIBLE);
+                mSearchedField.setText(s);
+                AsyncUserDiscovery users = mKinveyClient.userDiscovery();
+                users.lookupByUserName(s.toString(), new KinveyUserListCallback() {
+                    @Override
+                    public void onSuccess(User[] users) {
+                        if(users.length != 0){
+                            mAddFriendCheckBox.setVisibility(View.VISIBLE);
+                        }
+                        mProgressBar.setVisibility(View.INVISIBLE);
+
+                        Log.i(TAG, "received " + users.length + " users");
+                    }
+
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        mProgressBar.setVisibility(View.INVISIBLE);
+                        Log.i(TAG, "received " + throwable);
+                    }
+                });
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+
+        });
+
+        //Search checkbox
+
+        mAddFriendCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    //Add friend
+                    mKinveyClient.user().put(KinveyConstants.FRIENDS, new KinveyReference(User.USER_COLLECTION_NAME, mSearchField.getText().toString()));
+                    mKinveyClient.user().update(new KinveyUserCallback() {
+                        @Override
+                        public void onSuccess(User user) {
+                            Toast.makeText(AddFriendActivity.this, "update successful", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onFailure(Throwable throwable) {
+                            Toast.makeText(AddFriendActivity.this, "Something went wrong: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                } else {
+                    //Remove friend
+                }
+            }
+        });
+
+    }
+}

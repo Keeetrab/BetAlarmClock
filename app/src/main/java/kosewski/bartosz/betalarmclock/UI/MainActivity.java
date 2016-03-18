@@ -68,8 +68,9 @@ public class MainActivity extends AppCompatActivity implements FriendFragment.On
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+
+        final FloatingActionButton alarmFab = (FloatingActionButton) findViewById(R.id.addAlarmFab);
+        alarmFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, EditAlarm.class);
@@ -77,6 +78,45 @@ public class MainActivity extends AppCompatActivity implements FriendFragment.On
             }
         });
 
+        final FloatingActionButton friendFab = (FloatingActionButton) findViewById(R.id.addFriendFab);
+        friendFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, AddFriendActivity.class);
+                startActivity(intent);
+            }
+        });
+        friendFab.hide();
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                switch (position) {
+                    case 0:
+                        friendFab.hide();
+                        alarmFab.show();
+                        break;
+                    case 1:
+                        alarmFab.hide();
+                        friendFab.show();
+                        break;
+
+                    default:
+                        alarmFab.hide();
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
 

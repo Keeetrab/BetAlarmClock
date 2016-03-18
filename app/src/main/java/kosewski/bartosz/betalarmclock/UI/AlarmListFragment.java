@@ -14,6 +14,7 @@ import java.util.List;
 import kosewski.bartosz.betalarmclock.Model.Alarm;
 import kosewski.bartosz.betalarmclock.Database.AlarmDataSource;
 import kosewski.bartosz.betalarmclock.R;
+import kosewski.bartosz.betalarmclock.UI.Adapters.AlarmRecyclerViewAdapter;
 
 /**
  * A fragment representing a list of Items.

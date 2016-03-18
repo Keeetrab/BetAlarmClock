@@ -1,4 +1,4 @@
-package kosewski.bartosz.betalarmclock.UI;
+package kosewski.bartosz.betalarmclock.UI.Adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
