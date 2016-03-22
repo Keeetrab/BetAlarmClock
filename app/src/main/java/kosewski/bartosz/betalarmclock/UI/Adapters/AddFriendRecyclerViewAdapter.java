@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.google.api.client.util.ArrayMap;
@@ -38,6 +39,7 @@ public class AddFriendRecyclerViewAdapter extends RecyclerView.Adapter<AddFriend
         ArrayMap user = mUsers.get(position);
         holder.mUser = user;
         holder.mUsername.setText((String) user.get("_id"));
+        holder.mCheckBox.setChecked(true);
 
     }
 
@@ -56,12 +58,14 @@ public class AddFriendRecyclerViewAdapter extends RecyclerView.Adapter<AddFriend
         public View mView;
         public ArrayMap mUser;
         public TextView mUsername;
+        public CheckBox mCheckBox;
 
 
         public ViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
             mUsername = (TextView) itemView.findViewById(R.id.usernameField);
+            mCheckBox = (CheckBox) itemView.findViewById(R.id.addFriendBox);
         }
 
 

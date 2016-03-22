@@ -18,6 +18,7 @@ import kosewski.bartosz.betalarmclock.Scheduling.AlarmScheduler;
 import kosewski.bartosz.betalarmclock.UI.EditAlarm;
 import kosewski.bartosz.betalarmclock.Utils.Constants;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -76,11 +77,27 @@ public class AlarmRecyclerViewAdapter extends RecyclerView.Adapter<AlarmRecycler
         public final TextView mTimeView;
         public final Switch mEnabledSwitch;
 
+        public final TextView mMonday;
+        public final TextView mTuesday;
+        public final TextView mWednesday;
+        public final TextView mThursday;
+        public final TextView mFriday;
+        public final TextView mSaturday;
+        public final TextView mSunday;
+
         public ViewHolder(View view) {
             super(view);
             mView = view;
             mTimeView = (TextView) view.findViewById(R.id.timeView);
             mEnabledSwitch = (Switch) view.findViewById(R.id.onOffSwitch);
+
+            mMonday = (TextView) view.findViewById(R.id.monTextView);
+            mTuesday = (TextView) view.findViewById(R.id.tueTextView);
+            mWednesday = (TextView) view.findViewById(R.id.wedTextView);
+            mThursday = (TextView) view.findViewById(R.id.thuTextView);
+            mFriday = (TextView) view.findViewById(R.id.friTextView);
+            mSaturday = (TextView) view.findViewById(R.id.satTextView);
+            mSunday = (TextView) view.findViewById(R.id.sunTextView);
         }
 
         public void bindAlarm (final Alarm alarm){
@@ -96,6 +113,34 @@ public class AlarmRecyclerViewAdapter extends RecyclerView.Adapter<AlarmRecycler
                     Log.i(TAG, "Alarm is Enabled : " + alarm.isEnabled());
                 }
             });
+            setDays(alarm.getDays());
+
+        }
+
+        //Todo napisac to po ludzku
+
+        private void setDays(boolean[] days) {
+            if(days[0]){
+                mMonday.setTextColor(mView.getContext().getResources().getColor(R.color.colorAccent));
+            }
+            if(days[1]){
+                mTuesday.setTextColor(mView.getContext().getResources().getColor(R.color.colorAccent));
+            }
+            if(days[2]){
+                mWednesday.setTextColor(mView.getContext().getResources().getColor(R.color.colorAccent));
+            }
+            if(days[3]){
+                mThursday.setTextColor(mView.getContext().getResources().getColor(R.color.colorAccent));
+            }
+            if(days[4]){
+                mFriday.setTextColor(mView.getContext().getResources().getColor(R.color.colorAccent));
+            }
+            if(days[5]){
+                mSaturday.setTextColor(mView.getContext().getResources().getColor(R.color.colorAccent));
+            }
+            if(days[6]){
+                mSunday.setTextColor(mView.getContext().getResources().getColor(R.color.colorAccent));
+            }
         }
 
         private String formatAlarmTime (Alarm alarm) {

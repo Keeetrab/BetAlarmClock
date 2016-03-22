@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="match_parent"
-              android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_vertical_margin"
+                android:layout_marginRight="@dimen/activity_vertical_margin"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:background="@drawable/item_border">
 
     <TextView
         android:layout_width="wrap_content"
@@ -24,7 +28,52 @@
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginRight="28dp"
-        android:layout_marginEnd="28dp"/>
+        android:layout_marginRight="5dp"
+        android:layout_marginEnd="5dp"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/onOffSwitch"
+        android:layout_alignLeft="@+id/timeView"
+        android:layout_alignStart="@+id/timeView">
+
+        <TextView
+            android:text="Mon"
+            android:id="@+id/monTextView"
+            style="@style/alarm_item_list_day"/>
+
+        <TextView
+            android:text="Tue"
+            android:id="@+id/tueTextView"
+            style="@style/alarm_item_list_day"/>
+
+        <TextView
+            android:text="Wed"
+            android:id="@+id/wedTextView"
+            style="@style/alarm_item_list_day"/>
+
+        <TextView
+            android:text="Thu"
+            android:id="@+id/thuTextView"
+            style="@style/alarm_item_list_day"/>
+
+        <TextView
+            android:text="Fri"
+            android:id="@+id/friTextView"
+            style="@style/alarm_item_list_day"/>
+
+        <TextView
+            android:text="Sat"
+            android:id="@+id/satTextView"
+            style="@style/alarm_item_list_day"/>
+
+        <TextView
+            android:text="Sun"
+            android:id="@+id/sunTextView"
+            style="@style/alarm_item_list_day"/>
+    </LinearLayout>
 
 </RelativeLayout>
