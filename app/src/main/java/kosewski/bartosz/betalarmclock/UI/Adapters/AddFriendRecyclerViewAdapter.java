@@ -7,9 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.api.client.util.ArrayMap;
 import com.kinvey.java.User;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import kosewski.bartosz.betalarmclock.R;
 
@@ -19,9 +20,9 @@ import kosewski.bartosz.betalarmclock.R;
 public class AddFriendRecyclerViewAdapter extends RecyclerView.Adapter<AddFriendRecyclerViewAdapter.ViewHolder>{
 
     private static final String TAG = AddFriendRecyclerViewAdapter.class.getSimpleName();
-    private User[] mUsers;
+    private ArrayList<ArrayMap> mUsers;
 
-    public AddFriendRecyclerViewAdapter (User[] users){
+    public AddFriendRecyclerViewAdapter (ArrayList<ArrayMap> users){
         mUsers = users;
     }
 
@@ -34,9 +35,9 @@ public class AddFriendRecyclerViewAdapter extends RecyclerView.Adapter<AddFriend
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        User user = mUsers[position];
+        ArrayMap user = mUsers.get(position);
         holder.mUser = user;
-        holder.mUsername.setText(user.getUsername());
+        holder.mUsername.setText((String) user.get("_id"));
 
     }
 
@@ -44,20 +45,16 @@ public class AddFriendRecyclerViewAdapter extends RecyclerView.Adapter<AddFriend
     public int getItemCount() {
         int length = 0;
         if(mUsers!= null) {
-            length = mUsers.length;
+            length = mUsers.size();
         }
         Log.i(TAG, "getItemCount length : " + length);
         return length;
     }
 
-    public void updateData(User[] users){
-        mUsers = users;
-        notifyDataSetChanged();
-    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public View mView;
-        public User mUser;
+        public ArrayMap mUser;
         public TextView mUsername;
 
 

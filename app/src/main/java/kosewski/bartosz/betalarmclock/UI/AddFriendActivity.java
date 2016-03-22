@@ -19,13 +19,18 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.api.client.util.ArrayMap;
 import com.kinvey.android.AsyncUserDiscovery;
 import com.kinvey.android.Client;
 import com.kinvey.android.callback.KinveyUserCallback;
 import com.kinvey.android.callback.KinveyUserListCallback;
+import com.kinvey.java.Query;
 import com.kinvey.java.User;
 import com.kinvey.java.model.KinveyReference;
 import com.kinvey.java.model.UserLookup;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 import kosewski.bartosz.betalarmclock.R;
 import kosewski.bartosz.betalarmclock.UI.Adapters.AddFriendRecyclerViewAdapter;
@@ -37,7 +42,8 @@ import kosewski.bartosz.betalarmclock.Utils.KinveyUtils;
 public class AddFriendActivity extends AppCompatActivity {
 
     private static final String TAG = AddFriendActivity.class.getSimpleName();
-    public User[] mUsers;
+    public ArrayList<ArrayMap> mUsers;
+
     public EditText mSearchField;
     public TextView mSearchedField;
     public CheckBox mAddFriendCheckBox;
@@ -54,6 +60,7 @@ public class AddFriendActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
         mKinveyClient = KinveyUtils.getClient(this);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mProgressBar.setVisibility(View.INVISIBLE);
@@ -61,9 +68,11 @@ public class AddFriendActivity extends AppCompatActivity {
         mAddFriendCheckBox = (CheckBox) findViewById(R.id.addFriendCheckBox);
         mAddFriendCheckBox.setVisibility(View.INVISIBLE);
 
-        // Lsit of current friends
+        // List of current friends
 
-        //TODO  wlacyc recycler view
+        //TODO  zrobione na Arraymap
+
+        mUsers = (ArrayList<ArrayMap>) mKinveyClient.user().get(KinveyConstants.FRIENDS);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(new AddFriendRecyclerViewAdapter(mUsers));
@@ -93,6 +102,7 @@ public class AddFriendActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //update textView while typing
                 mAddFriendCheckBox.setVisibility(View.INVISIBLE);
                 mProgressBar.setVisibility(View.VISIBLE);
                 mSearchedField.setText(s);
@@ -100,6 +110,7 @@ public class AddFriendActivity extends AppCompatActivity {
                 users.lookupByUserName(s.toString(), new KinveyUserListCallback() {
                     @Override
                     public void onSuccess(User[] users) {
+                        //if user found show checkbox to add a friend
                         if(users.length != 0){
                             mAddFriendCheckBox.setVisibility(View.VISIBLE);
                         }
@@ -123,14 +134,23 @@ public class AddFriendActivity extends AppCompatActivity {
 
         });
 
-        //Search checkbox
+        //Add friend checkbox
 
         mAddFriendCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
                     //Add friend
-                    mKinveyClient.user().put(KinveyConstants.FRIENDS, new KinveyReference(User.USER_COLLECTION_NAME, mSearchField.getText().toString()));
+                    if (mKinveyClient.user().get(KinveyConstants.FRIENDS) == null){
+                        mKinveyClient.user().put(KinveyConstants.FRIENDS, new ArrayList<KinveyReference>());
+                    }
+
+                    String friendId = mSearchField.getText().toString();
+                    KinveyReference friend = new KinveyReference(User.USER_COLLECTION_NAME, friendId);
+
+                    ((ArrayList<KinveyReference>) mKinveyClient.user().get(KinveyConstants.FRIENDS)).add(friend);
+
+
                     mKinveyClient.user().update(new KinveyUserCallback() {
                         @Override
                         public void onSuccess(User user) {
