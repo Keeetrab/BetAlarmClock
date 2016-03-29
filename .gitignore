@@ -6,4 +6,4 @@
 .DS_Store
 /build
 /captures
-"KinveyConstants.java" 
+/app/src/main/java/kosewski/bartosz/betalarmclock/Utils/KinveyConstants.java

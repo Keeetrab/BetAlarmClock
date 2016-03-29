@@ -25,12 +25,10 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
-            android:name=".UI.EditAlarm"
+            android:name=".UI.EditAlarmActivity"
             android:label="@string/title_activity_edit_alarm"
             android:parentActivityName=".UI.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -67,6 +65,12 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="kosewski.bartosz.betalarmclock.UI.MainActivity"/>
+        </activity>
+        <activity android:name=".UI.LoadingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
     </application>
 

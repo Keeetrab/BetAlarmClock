@@ -19,8 +19,8 @@ import kosewski.bartosz.betalarmclock.R;
 import kosewski.bartosz.betalarmclock.Scheduling.AlarmScheduler;
 import kosewski.bartosz.betalarmclock.Utils.Constants;
 
-public class EditAlarm extends AppCompatActivity {
-    private static final String TAG = EditAlarm.class.getSimpleName();
+public class EditAlarmActivity extends AppCompatActivity {
+    private static final String TAG = EditAlarmActivity.class.getSimpleName();
     private TimePicker mTimePicker;
     private ImageView mDeleteButton;
     private CheckBox[] mDayCheckBoxes;
@@ -68,7 +68,7 @@ public class EditAlarm extends AppCompatActivity {
             mDeleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    AlarmScheduler.deleteAlarm(EditAlarm.this, mAlarm);
+                    AlarmScheduler.deleteAlarm(EditAlarmActivity.this, mAlarm);
                     finish();
                 }
             });

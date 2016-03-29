@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.google.api.client.util.ArrayMap;
@@ -39,8 +40,7 @@ public class AddFriendRecyclerViewAdapter extends RecyclerView.Adapter<AddFriend
         ArrayMap user = mUsers.get(position);
         holder.mUser = user;
         holder.mUsername.setText((String) user.get("_id"));
-        holder.mCheckBox.setChecked(true);
-
+        holder.mCheckBox.setVisibility(View.INVISIBLE);
     }
 
     @Override

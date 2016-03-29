@@ -1,30 +1,28 @@
 package kosewski.bartosz.betalarmclock.UI.Adapters;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.api.client.util.ArrayMap;
+
 import kosewski.bartosz.betalarmclock.R;
-import kosewski.bartosz.betalarmclock.UI.FriendFragment.OnListFragmentInteractionListener;
-import kosewski.bartosz.betalarmclock.UI.dummy.DummyContent.DummyItem;
 
-import java.util.List;
+import java.util.ArrayList;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */
+
+//TODO: Replace the implementation with code for your data type.
+
 public class FriendRecyclerViewAdapter extends RecyclerView.Adapter<FriendRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
-    private final OnListFragmentInteractionListener mListener;
+    private static final String TAG = FriendRecyclerViewAdapter.class.getSimpleName();
+    private final ArrayList<ArrayMap> mFriends;
 
-    public FriendRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
-        mValues = items;
-        mListener = listener;
+    public FriendRecyclerViewAdapter(ArrayList<ArrayMap> items) {
+        mFriends = items;
     }
 
     @Override
@@ -36,36 +34,31 @@ public class FriendRecyclerViewAdapter extends RecyclerView.Adapter<FriendRecycl
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
+        ArrayMap user = mFriends.get(position);
+        holder.mUser = user;
+        holder.mUsername.setText((String) user.get("_id"));
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
-                }
-            }
-        });
     }
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        int length = 0;
+        if(mFriends!= null) {
+            length = mFriends.size();
+        }
+        Log.i(TAG, "getItemCount length : " + length);
+        return length;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
-        public DummyItem mItem;
+        public ArrayMap mUser;
+        public TextView mUsername;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            mUsername = (TextView) view.findViewById(R.id.nameField);
         }
     }
 }

@@ -1,32 +1,40 @@
 package kosewski.bartosz.betalarmclock.UI;
 
+import android.app.DownloadManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.api.client.util.ArrayMap;
+import com.kinvey.android.AsyncAppData;
+import com.kinvey.android.Client;
+import com.kinvey.android.callback.KinveyListCallback;
+import com.kinvey.java.AppData;
+import com.kinvey.java.Query;
+import com.kinvey.java.User;
+
+import java.util.ArrayList;
+
 import kosewski.bartosz.betalarmclock.R;
 import kosewski.bartosz.betalarmclock.UI.Adapters.FriendRecyclerViewAdapter;
-import kosewski.bartosz.betalarmclock.UI.dummy.DummyContent;
-import kosewski.bartosz.betalarmclock.UI.dummy.DummyContent.DummyItem;
+import kosewski.bartosz.betalarmclock.Utils.KinveyConstants;
+import kosewski.bartosz.betalarmclock.Utils.KinveyUtils;
 
-/**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
- */
 public class FriendFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
-    private int mColumnCount = 1;
-    private OnListFragmentInteractionListener mListener;
+    public static final String TAG = FriendFragment.class.getSimpleName();
+
+    public ArrayList<ArrayMap> mFriends;
+    public Client mKinveyClient;
+
+    public RecyclerView mRecyclerView;
+
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -35,13 +43,14 @@ public class FriendFragment extends Fragment {
     public FriendFragment() {
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mKinveyClient = KinveyUtils.getClient(getContext());
+        mFriends = getUserFriends();
 
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
+
     }
 
     @Override
@@ -50,20 +59,22 @@ public class FriendFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_friend_list, container, false);
 
 
-
-
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            recyclerView.setAdapter(new FriendRecyclerViewAdapter(DummyContent.createList(), mListener));
+      if (view instanceof RecyclerView) {
+          Context context = view.getContext();
+          mRecyclerView = (RecyclerView) view;
+          mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+          mRecyclerView.setAdapter(new FriendRecyclerViewAdapter(mFriends));
         }
         return view;
     }
 
-
     @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    /*    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnListFragmentInteractionListener) {
@@ -72,26 +83,31 @@ public class FriendFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
         }
-    }
+    }*/
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+    private ArrayList<ArrayMap> getUserFriends() {
+        AsyncAppData<User> friends = mKinveyClient.appData(KinveyConstants.FRIENDS, User.class);
+        Query query = mKinveyClient.query();
+
+        friends.get(query, new KinveyListCallback<User>() {
+
+            @Override
+            public void onSuccess(User[] users) {
+                Log.i(TAG, "Got users: " + users);
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+
+            }
+        });
+
+        return null;
     }
+
 }

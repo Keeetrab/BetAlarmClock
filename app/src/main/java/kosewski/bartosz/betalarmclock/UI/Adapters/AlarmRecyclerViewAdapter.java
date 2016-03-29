@@ -15,10 +15,9 @@ import kosewski.bartosz.betalarmclock.Model.Alarm;
 import kosewski.bartosz.betalarmclock.Database.AlarmDataSource;
 import kosewski.bartosz.betalarmclock.R;
 import kosewski.bartosz.betalarmclock.Scheduling.AlarmScheduler;
-import kosewski.bartosz.betalarmclock.UI.EditAlarm;
+import kosewski.bartosz.betalarmclock.UI.EditAlarmActivity;
 import kosewski.bartosz.betalarmclock.Utils.Constants;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,7 +54,7 @@ public class AlarmRecyclerViewAdapter extends RecyclerView.Adapter<AlarmRecycler
         holder.mView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Intent editIntent = new Intent(mContext, EditAlarm.class);
+                Intent editIntent = new Intent(mContext, EditAlarmActivity.class);
                 Alarm alarm = mAlarms.get(position);
                 editIntent.putExtra(Constants.ALARM, alarm);
                 editIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

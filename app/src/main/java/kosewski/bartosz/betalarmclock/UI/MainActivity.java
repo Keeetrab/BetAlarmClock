@@ -11,25 +11,16 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-
-import android.widget.TextView;
 
 import com.kinvey.android.Client;
 
-import kosewski.bartosz.betalarmclock.BetAlarmClock;
 import kosewski.bartosz.betalarmclock.R;
-import kosewski.bartosz.betalarmclock.UI.dummy.DummyContent;
-import kosewski.bartosz.betalarmclock.Utils.Constants;
-import kosewski.bartosz.betalarmclock.Utils.KinveyConstants;
 import kosewski.bartosz.betalarmclock.Utils.KinveyUtils;
 
-public class MainActivity extends AppCompatActivity implements FriendFragment.OnListFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     /**
@@ -41,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements FriendFragment.On
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-    public Client mKinveyClient;
+    public static Client mKinveyClient;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -73,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements FriendFragment.On
         alarmFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, EditAlarm.class);
+                Intent intent = new Intent(MainActivity.this, EditAlarmActivity.class);
                 startActivity(intent);
             }
         });
@@ -158,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements FriendFragment.On
 
     }
 
+
     private void navigateToLogin() {
         Intent intent = new Intent(this, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -165,10 +157,6 @@ public class MainActivity extends AppCompatActivity implements FriendFragment.On
         startActivity(intent);
     }
 
-    @Override
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
-
-    }
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
