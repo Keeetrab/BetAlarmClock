@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.kinvey.android.Client;
+import com.parse.ParseUser;
 
 import kosewski.bartosz.betalarmclock.R;
 import kosewski.bartosz.betalarmclock.Utils.KinveyUtils;
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-    public static Client mKinveyClient;
+
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -131,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_settings:
                 return true;
             case R.id.logout:
-                mKinveyClient.user().logout().execute();
+                ParseUser.logOut();
                 navigateToLogin();
                 return true;
 
@@ -141,12 +142,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void checkActiveUser() {
-        mKinveyClient = KinveyUtils.getClient(this);
-
-        if(!mKinveyClient.user().isUserLoggedIn()){
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        if (currentUser == null) {
             navigateToLogin();
         }
-
     }
 
 

@@ -22,6 +22,7 @@ import com.kinvey.android.Client;
 import com.kinvey.android.callback.KinveyUserCallback;
 import com.kinvey.android.callback.KinveyUserListCallback;
 import com.kinvey.java.User;
+import com.kinvey.java.core.KinveyClientCallback;
 import com.kinvey.java.model.KinveyReference;
 
 import java.util.ArrayList;
@@ -143,20 +144,20 @@ public class AddFriendActivity extends AppCompatActivity {
                     checkIfFirstFriend();
 
                     KinveyReference friend = new KinveyReference(User.USER_COLLECTION_NAME, friendId);
-                    ((ArrayList<KinveyReference>) mKinveyClient.user().get(KinveyConstants.FRIENDS)).add(friend);
-
-
-                    mKinveyClient.user().update(new KinveyUserCallback() {
+                    mKinveyClient.appData(User.USER_COLLECTION_NAME, KinveyReference.class).save(friend, new KinveyClientCallback<KinveyReference>() {
                         @Override
-                        public void onSuccess(User user) {
+                        public void onSuccess(KinveyReference kinveyReference) {
                             Toast.makeText(AddFriendActivity.this, "update successful", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
                         public void onFailure(Throwable throwable) {
-                            Toast.makeText(AddFriendActivity.this, "Something went wrong: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AddFriendActivity.this, "update successful", Toast.LENGTH_SHORT).show();
                         }
                     });
+                   /* ((ArrayList<KinveyReference>) mKinveyClient.user().get(KinveyConstants.FRIENDS)).add(friend);
+*/
+
 
                 } else {
                     //Remove friend
@@ -170,6 +171,18 @@ public class AddFriendActivity extends AppCompatActivity {
     private void checkIfFirstFriend() {
         if (mKinveyClient.user().get(KinveyConstants.FRIENDS) == null){
             mKinveyClient.user().put(KinveyConstants.FRIENDS, new ArrayList<KinveyReference>());
+
+            mKinveyClient.user().update(new KinveyUserCallback() {
+                @Override
+                public void onSuccess(User user) {
+                    Toast.makeText(AddFriendActivity.this, "update successful", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailure(Throwable throwable) {
+                    Toast.makeText(AddFriendActivity.this, "update successful", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
     }

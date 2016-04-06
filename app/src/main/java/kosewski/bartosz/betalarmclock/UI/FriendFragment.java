@@ -18,6 +18,7 @@ import com.kinvey.android.callback.KinveyListCallback;
 import com.kinvey.java.AppData;
 import com.kinvey.java.Query;
 import com.kinvey.java.User;
+import com.kinvey.java.model.KinveyReference;
 
 import java.util.ArrayList;
 
@@ -91,14 +92,13 @@ public class FriendFragment extends Fragment {
     }
 
     private ArrayList<ArrayMap> getUserFriends() {
-        AsyncAppData<User> friends = mKinveyClient.appData(KinveyConstants.FRIENDS, User.class);
+        AsyncAppData<KinveyReference> friends = mKinveyClient.appData(KinveyConstants.FRIENDS, KinveyReference.class);
         Query query = mKinveyClient.query();
 
-        friends.get(query, new KinveyListCallback<User>() {
-
+        friends.get(query, new KinveyListCallback<KinveyReference>() {
             @Override
-            public void onSuccess(User[] users) {
-                Log.i(TAG, "Got users: " + users);
+            public void onSuccess(KinveyReference[] kinveyReferences) {
+                Log.i(TAG, "Got : " + kinveyReferences.length);
             }
 
             @Override

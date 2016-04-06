@@ -34,10 +34,14 @@ import android.widget.Toast;
 import com.kinvey.android.Client;
 import com.kinvey.android.callback.KinveyUserCallback;
 import com.kinvey.java.User;
+import com.parse.ParseException;
+import com.parse.ParseUser;
+import com.parse.SignUpCallback;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import kosewski.bartosz.betalarmclock.BetAlarmClock;
 import kosewski.bartosz.betalarmclock.R;
 import kosewski.bartosz.betalarmclock.Utils.Constants;
 import kosewski.bartosz.betalarmclock.Utils.KinveyConstants;
@@ -78,7 +82,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-        setupActionBar();
+        //setupActionBar();
         // Set up the login form.
         mUsernameView = (EditText) findViewById(R.id.username);
 
@@ -345,36 +349,27 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
-            final Client mKinveyClient = KinveyUtils.getClient(SignUpActivity.this);
+            ParseUser user = new ParseUser();
+            user.setUsername(mUsername);
+            user.setPassword(mPassword);
+            user.setEmail(mEmail);
 
-            mKinveyClient.user().create(mUsername, mPassword, new KinveyUserCallback() {
+            user.signUpInBackground(new SignUpCallback() {
                 @Override
-                public void onSuccess(User user) {
-                    //TODO dodac maila
-                    user.put("email", mEmail);
-                    mKinveyClient.user().update(new KinveyUserCallback() {
-                        @Override
-                        public void onSuccess(User user) {
+                public void done(ParseException e) {
+                    if (e == null) {
+                        //Success
+                        BetAlarmClock.updateParseInstallation(ParseUser.getCurrentUser());
 
-                        }
+                        Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
 
-                        @Override
-                        public void onFailure(Throwable throwable) {
-
-                        }
-                    });
-
-                    Toast.makeText(getApplicationContext(), "Hello! " + user.getUsername(), Toast.LENGTH_SHORT).show();
-
-                    Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                }
-
-                @Override
-                public void onFailure(Throwable throwable) {
-                    Toast.makeText(getApplicationContext(), "Could not sign up -> " + throwable.getMessage(), Toast.LENGTH_LONG).show();
+                    } else {
+                        //Failure
+                        Toast.makeText(SignUpActivity.this, "Sorry, " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
 
