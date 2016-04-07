@@ -26,7 +26,7 @@ public class BetAlarmClock extends Application {
         super.onCreate();
 
         Parse.enableLocalDatastore(this);
-        Parse.initialize(this, BuildConfig.APPLICATION_ID, BuildConfig.PARSE_CLIENT_KEY);
+        Parse.initialize(this, BuildConfig.PARSE_APPLICATION_ID, BuildConfig.PARSE_CLIENT_KEY);
 
         ParseInstallation.getCurrentInstallation().saveInBackground();
     }
