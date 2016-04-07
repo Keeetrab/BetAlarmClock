@@ -67,12 +67,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="kosewski.bartosz.betalarmclock.UI.MainActivity"/>
         </activity>
-        <activity android:name=".UI.LoadingActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

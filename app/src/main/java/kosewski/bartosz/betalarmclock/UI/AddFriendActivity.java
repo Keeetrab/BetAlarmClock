@@ -16,14 +16,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.api.client.util.ArrayMap;
-import com.kinvey.android.AsyncUserDiscovery;
-import com.kinvey.android.Client;
-import com.kinvey.android.callback.KinveyUserCallback;
-import com.kinvey.android.callback.KinveyUserListCallback;
-import com.kinvey.java.User;
-import com.kinvey.java.core.KinveyClientCallback;
-import com.kinvey.java.model.KinveyReference;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -37,8 +29,6 @@ import java.util.List;
 
 import kosewski.bartosz.betalarmclock.R;
 import kosewski.bartosz.betalarmclock.UI.Adapters.AddFriendRecyclerViewAdapter;
-import kosewski.bartosz.betalarmclock.Utils.KinveyConstants;
-import kosewski.bartosz.betalarmclock.Utils.KinveyUtils;
 import kosewski.bartosz.betalarmclock.Utils.ParseConstants;
 
 public class AddFriendActivity extends AppCompatActivity {

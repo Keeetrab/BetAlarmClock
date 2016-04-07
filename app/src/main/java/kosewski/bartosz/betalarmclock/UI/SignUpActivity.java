@@ -31,9 +31,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.kinvey.android.Client;
-import com.kinvey.android.callback.KinveyUserCallback;
-import com.kinvey.java.User;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
@@ -43,9 +40,6 @@ import java.util.List;
 
 import kosewski.bartosz.betalarmclock.BetAlarmClock;
 import kosewski.bartosz.betalarmclock.R;
-import kosewski.bartosz.betalarmclock.Utils.Constants;
-import kosewski.bartosz.betalarmclock.Utils.KinveyConstants;
-import kosewski.bartosz.betalarmclock.Utils.KinveyUtils;
 
 import static android.Manifest.permission.READ_CONTACTS;
 

@@ -20,7 +20,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -33,10 +32,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.kinvey.android.Client;
-import com.kinvey.android.callback.KinveyUserCallback;
-import com.kinvey.java.User;
-import com.kinvey.java.model.KinveyReference;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -46,9 +41,6 @@ import java.util.List;
 
 import kosewski.bartosz.betalarmclock.BetAlarmClock;
 import kosewski.bartosz.betalarmclock.R;
-import kosewski.bartosz.betalarmclock.Utils.Constants;
-import kosewski.bartosz.betalarmclock.Utils.KinveyConstants;
-import kosewski.bartosz.betalarmclock.Utils.KinveyUtils;
 
 import static android.Manifest.permission.READ_CONTACTS;
 

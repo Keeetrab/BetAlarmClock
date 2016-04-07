@@ -15,11 +15,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.kinvey.android.Client;
 import com.parse.ParseUser;
 
 import kosewski.bartosz.betalarmclock.R;
-import kosewski.bartosz.betalarmclock.Utils.KinveyUtils;
 
 public class MainActivity extends AppCompatActivity {
 
