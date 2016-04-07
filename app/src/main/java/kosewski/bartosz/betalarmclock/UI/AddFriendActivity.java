@@ -118,27 +118,31 @@ public class AddFriendActivity extends AppCompatActivity {
                 mProgressBar.setVisibility(View.VISIBLE);
 
                 //Search for a user
-                ParseQuery<ParseUser> query = ParseQuery.getQuery("_User");
-                query.whereStartsWith(ParseConstants.KEY_USERNAME, searchedName.toString());
-                query.whereNotEqualTo(ParseConstants.KEY_USERNAME, mCurrentUser.getUsername());
-                query.whereNotContainedIn(ParseConstants.KEY_USERNAME, mFriendsNames);
-                if(searchedName.length() > 0) {
-                    query.getFirstInBackground(new GetCallback<ParseUser>() {
-                        @Override
-                        public void done(ParseUser object, ParseException e) {
-                            if (object != null) {
-                                mAddFriendCheckBox.setVisibility(View.VISIBLE);
-                                mFoundUser = object;
-                                mSearchedField.setText(object.getUsername());
-                            } else {
-                                mSearchedField.setText(" ");
+                if(mFriends != null) {
+                    ParseQuery<ParseUser> query = ParseQuery.getQuery("_User");
+                    query.whereStartsWith(ParseConstants.KEY_USERNAME, searchedName.toString());
+                    query.whereNotEqualTo(ParseConstants.KEY_USERNAME, mCurrentUser.getUsername());
+                    query.whereNotContainedIn(ParseConstants.KEY_USERNAME, mFriendsNames);
+                    if (searchedName.length() > 0) {
+                        query.getFirstInBackground(new GetCallback<ParseUser>() {
+                            @Override
+                            public void done(ParseUser object, ParseException e) {
+                                if (object != null) {
+                                    mAddFriendCheckBox.setVisibility(View.VISIBLE);
+                                    mFoundUser = object;
+                                    mSearchedField.setText(object.getUsername());
+                                    mAddFriendCheckBox.setChecked(mFriends.contains(object));
+
+                                } else {
+                                    mSearchedField.setText(" ");
+                                }
                             }
-                        }
-                    });
-                } else {
-                    mSearchedField.setText(" ");
+                        });
+                    } else {
+                        mSearchedField.setText(" ");
+                    }
+                    mProgressBar.setVisibility(View.INVISIBLE);
                 }
-                mProgressBar.setVisibility(View.INVISIBLE);
             }
 
             @Override
@@ -159,22 +163,16 @@ public class AddFriendActivity extends AppCompatActivity {
 
     }
 
-    private ArrayList<String> getFriendsNames() {
-        ArrayList<String> names = new ArrayList<>();
-        for(ParseUser user : mFriends){
-            names.add(user.getUsername());
-        }
-
-        return names;
-    }
 
     private void addOrDeleteFriend(ParseUser user, Boolean isChecked) {
         if(isChecked){
             mFriendsRelation.add(user);
+            mFriends.add(user);
             Log.i(TAG, "Added: " + user.getUsername());
         } else {
             //Remove friend
             mFriendsRelation.remove(user);
+            mFriends.remove(user);
             Log.i(TAG, "Deleted: " + user.getUsername());
         }
 
@@ -200,10 +198,10 @@ public class AddFriendActivity extends AppCompatActivity {
                             mFriendsNames = getFriendsNames();
 
                             // Fill and set Adapter
-                            if(mRecyclerView.getAdapter() == null){
+                            if (mRecyclerView.getAdapter() == null) {
                                 mRecyclerView.setLayoutManager(new LinearLayoutManager(AddFriendActivity.this));
                                 mRecyclerView.setAdapter(new AddFriendRecyclerViewAdapter(mFriends, mListener));
-                            } else{
+                            } else {
                                 ((AddFriendRecyclerViewAdapter) mRecyclerView.getAdapter()).refill(list);
                             }
 
@@ -213,5 +211,15 @@ public class AddFriendActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+
+    private ArrayList<String> getFriendsNames() {
+        ArrayList<String> names = new ArrayList<>();
+        for(ParseUser user : mFriends){
+            names.add(user.getUsername());
+        }
+
+        return names;
     }
 }
