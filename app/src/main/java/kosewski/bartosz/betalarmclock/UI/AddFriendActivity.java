@@ -50,10 +50,10 @@ public class AddFriendActivity extends AppCompatActivity {
     public CheckBox mAddFriendCheckBox;
     public ProgressBar mProgressBar;
     public RecyclerView mRecyclerView;
-
-    public Client mKinveyClient;
+    public AddFriendRecyclerViewAdapter.OnCheckboxClickListener mListener;
 
     protected List<ParseUser> mFriends;
+    protected ArrayList<String> mFriendsNames;
     protected ParseRelation<ParseUser> mFriendsRelation;
     protected ParseUser mCurrentUser;
     protected ParseUser mFoundUser;
@@ -65,11 +65,11 @@ public class AddFriendActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_friend);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mCurrentUser = ParseUser.getCurrentUser();
         mFriendsRelation = mCurrentUser.getRelation(ParseConstants.KEY_FRIENDS_RELATION);
 
-        mKinveyClient = KinveyUtils.getClient(this);
 
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mProgressBar.setVisibility(View.INVISIBLE);
@@ -79,8 +79,16 @@ public class AddFriendActivity extends AppCompatActivity {
 
 
         // List of current friends
+        mListener = new AddFriendRecyclerViewAdapter.OnCheckboxClickListener() {
+            @Override
+            public void OnCheckboxClicked(ParseUser user, Boolean isChecked) {
+                addOrDeleteFriend(user, isChecked);
+            }
+        };
+
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         populateFriendsList();
+
 
         //FAB
 
@@ -92,7 +100,7 @@ public class AddFriendActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });*/
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         // Search Field
 
@@ -113,6 +121,7 @@ public class AddFriendActivity extends AppCompatActivity {
                 ParseQuery<ParseUser> query = ParseQuery.getQuery("_User");
                 query.whereStartsWith(ParseConstants.KEY_USERNAME, searchedName.toString());
                 query.whereNotEqualTo(ParseConstants.KEY_USERNAME, mCurrentUser.getUsername());
+                query.whereNotContainedIn(ParseConstants.KEY_USERNAME, mFriendsNames);
                 if(searchedName.length() > 0) {
                     query.getFirstInBackground(new GetCallback<ParseUser>() {
                         @Override
@@ -144,26 +153,39 @@ public class AddFriendActivity extends AppCompatActivity {
         mAddFriendCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
-                    mFriendsRelation.add(mFoundUser);
-                    Log.i(TAG, "Added: " + mFoundUser.getUsername());
-                } else {
-                    //Remove friend
-                    mFriendsRelation.remove(mFoundUser);
-                    Log.i(TAG, "Deleted: " + mFoundUser.getUsername());
-                }
-
-                mCurrentUser.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if (e != null) {
-                            Log.e(TAG, e.getMessage());
-                        }
-                    }
-                });
+                addOrDeleteFriend(mFoundUser, isChecked);
             }
         });
 
+    }
+
+    private ArrayList<String> getFriendsNames() {
+        ArrayList<String> names = new ArrayList<>();
+        for(ParseUser user : mFriends){
+            names.add(user.getUsername());
+        }
+
+        return names;
+    }
+
+    private void addOrDeleteFriend(ParseUser user, Boolean isChecked) {
+        if(isChecked){
+            mFriendsRelation.add(user);
+            Log.i(TAG, "Added: " + user.getUsername());
+        } else {
+            //Remove friend
+            mFriendsRelation.remove(user);
+            Log.i(TAG, "Deleted: " + user.getUsername());
+        }
+
+        mCurrentUser.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, e.getMessage());
+                }
+            }
+        });
     }
 
     private void populateFriendsList() {
@@ -175,10 +197,12 @@ public class AddFriendActivity extends AppCompatActivity {
                         if (e == null) {
                             mFriends = list;
 
+                            mFriendsNames = getFriendsNames();
+
                             // Fill and set Adapter
                             if(mRecyclerView.getAdapter() == null){
                                 mRecyclerView.setLayoutManager(new LinearLayoutManager(AddFriendActivity.this));
-                                mRecyclerView.setAdapter(new AddFriendRecyclerViewAdapter(mFriends));
+                                mRecyclerView.setAdapter(new AddFriendRecyclerViewAdapter(mFriends, mListener));
                             } else{
                                 ((AddFriendRecyclerViewAdapter) mRecyclerView.getAdapter()).refill(list);
                             }

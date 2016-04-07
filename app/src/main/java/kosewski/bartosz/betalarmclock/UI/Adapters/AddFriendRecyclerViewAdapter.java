@@ -25,9 +25,11 @@ public class AddFriendRecyclerViewAdapter extends RecyclerView.Adapter<AddFriend
 
     private static final String TAG = AddFriendRecyclerViewAdapter.class.getSimpleName();
     private List<ParseUser> mUsers;
+    private final OnCheckboxClickListener mListener;
 
-    public AddFriendRecyclerViewAdapter (List<ParseUser> users){
+    public AddFriendRecyclerViewAdapter (List<ParseUser> users, OnCheckboxClickListener listener){
         mUsers = users;
+        mListener = listener;
     }
 
     @Override
@@ -39,10 +41,16 @@ public class AddFriendRecyclerViewAdapter extends RecyclerView.Adapter<AddFriend
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        ParseUser user = mUsers.get(position);
+        final ParseUser user = mUsers.get(position);
         holder.mUser = user;
         holder.mUsername.setText(user.getUsername());
-        holder.mCheckBox.setVisibility(View.INVISIBLE);
+        holder.mCheckBox.setChecked(true);
+        holder.mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mListener.OnCheckboxClicked(user, isChecked);
+            }
+        });
     }
 
     @Override
@@ -59,6 +67,10 @@ public class AddFriendRecyclerViewAdapter extends RecyclerView.Adapter<AddFriend
         mUsers.clear();
         mUsers.addAll(users);
         notifyDataSetChanged();
+    }
+
+    public interface OnCheckboxClickListener {
+        void OnCheckboxClicked(ParseUser user, Boolean isChecked);
     }
 
 
