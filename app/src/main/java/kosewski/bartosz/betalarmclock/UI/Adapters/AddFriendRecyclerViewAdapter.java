@@ -11,8 +11,10 @@ import android.widget.TextView;
 
 import com.google.api.client.util.ArrayMap;
 import com.kinvey.java.User;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import kosewski.bartosz.betalarmclock.R;
 
@@ -22,9 +24,9 @@ import kosewski.bartosz.betalarmclock.R;
 public class AddFriendRecyclerViewAdapter extends RecyclerView.Adapter<AddFriendRecyclerViewAdapter.ViewHolder>{
 
     private static final String TAG = AddFriendRecyclerViewAdapter.class.getSimpleName();
-    private ArrayList<ArrayMap> mUsers;
+    private List<ParseUser> mUsers;
 
-    public AddFriendRecyclerViewAdapter (ArrayList<ArrayMap> users){
+    public AddFriendRecyclerViewAdapter (List<ParseUser> users){
         mUsers = users;
     }
 
@@ -37,9 +39,9 @@ public class AddFriendRecyclerViewAdapter extends RecyclerView.Adapter<AddFriend
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        ArrayMap user = mUsers.get(position);
+        ParseUser user = mUsers.get(position);
         holder.mUser = user;
-        holder.mUsername.setText((String) user.get("_id"));
+        holder.mUsername.setText(user.getUsername());
         holder.mCheckBox.setVisibility(View.INVISIBLE);
     }
 
@@ -53,10 +55,16 @@ public class AddFriendRecyclerViewAdapter extends RecyclerView.Adapter<AddFriend
         return length;
     }
 
+    public void refill(List<ParseUser> users) {
+        mUsers.clear();
+        mUsers.addAll(users);
+        notifyDataSetChanged();
+    }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public View mView;
-        public ArrayMap mUser;
+        public ParseUser mUser;
         public TextView mUsername;
         public CheckBox mCheckBox;
 

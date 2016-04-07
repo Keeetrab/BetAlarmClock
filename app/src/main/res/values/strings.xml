@@ -33,4 +33,5 @@
     <string name="logout">Logout</string>
     <string name="title_activity_add_friend">AddFriendActivity</string>
     <string name="login_error_title">Ups!</string>
+    <string name="error_toast">Sorry! Something went wrong</string>
 </resources>

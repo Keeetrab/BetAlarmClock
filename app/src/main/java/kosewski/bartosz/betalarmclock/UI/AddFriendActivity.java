@@ -24,18 +24,26 @@ import com.kinvey.android.callback.KinveyUserListCallback;
 import com.kinvey.java.User;
 import com.kinvey.java.core.KinveyClientCallback;
 import com.kinvey.java.model.KinveyReference;
+import com.parse.FindCallback;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
+import com.parse.ParseRelation;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import kosewski.bartosz.betalarmclock.R;
 import kosewski.bartosz.betalarmclock.UI.Adapters.AddFriendRecyclerViewAdapter;
 import kosewski.bartosz.betalarmclock.Utils.KinveyConstants;
 import kosewski.bartosz.betalarmclock.Utils.KinveyUtils;
+import kosewski.bartosz.betalarmclock.Utils.ParseConstants;
 
 public class AddFriendActivity extends AppCompatActivity {
 
     private static final String TAG = AddFriendActivity.class.getSimpleName();
-    public ArrayList<ArrayMap> mFriends;
 
     public EditText mSearchField;
     public TextView mSearchedField;
@@ -45,6 +53,11 @@ public class AddFriendActivity extends AppCompatActivity {
 
     public Client mKinveyClient;
 
+    protected List<ParseUser> mFriends;
+    protected ParseRelation<ParseUser> mFriendsRelation;
+    protected ParseUser mCurrentUser;
+    protected ParseUser mFoundUser;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +66,8 @@ public class AddFriendActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        mCurrentUser = ParseUser.getCurrentUser();
+        mFriendsRelation = mCurrentUser.getRelation(ParseConstants.KEY_FRIENDS_RELATION);
 
         mKinveyClient = KinveyUtils.getClient(this);
 
@@ -62,18 +77,10 @@ public class AddFriendActivity extends AppCompatActivity {
         mAddFriendCheckBox = (CheckBox) findViewById(R.id.addFriendCheckBox);
         mAddFriendCheckBox.setVisibility(View.INVISIBLE);
 
+
         // List of current friends
-
-        //TODO  zrobione na Arraymap
-
-
-        mFriends = getUserFriends();
-
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setAdapter(new AddFriendRecyclerViewAdapter(mFriends));
-
-
+        populateFriendsList();
 
         //FAB
 
@@ -84,8 +91,8 @@ public class AddFriendActivity extends AppCompatActivity {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);*/
+        });*/
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Search Field
 
@@ -102,27 +109,27 @@ public class AddFriendActivity extends AppCompatActivity {
                 mAddFriendCheckBox.setVisibility(View.INVISIBLE);
                 mProgressBar.setVisibility(View.VISIBLE);
 
-                mSearchedField.setText(searchedName);
                 //Search for a user
-                AsyncUserDiscovery users = mKinveyClient.userDiscovery();
-                users.lookupByUserName(searchedName.toString(), new KinveyUserListCallback() {
-                    @Override
-                    public void onSuccess(User[] users) {
-                        //if user found show checkbox to add a friend
-                        if(users.length != 0){
-                            mAddFriendCheckBox.setVisibility(View.VISIBLE);
+                ParseQuery<ParseUser> query = ParseQuery.getQuery("_User");
+                query.whereStartsWith(ParseConstants.KEY_USERNAME, searchedName.toString());
+                query.whereNotEqualTo(ParseConstants.KEY_USERNAME, mCurrentUser.getUsername());
+                if(searchedName.length() > 0) {
+                    query.getFirstInBackground(new GetCallback<ParseUser>() {
+                        @Override
+                        public void done(ParseUser object, ParseException e) {
+                            if (object != null) {
+                                mAddFriendCheckBox.setVisibility(View.VISIBLE);
+                                mFoundUser = object;
+                                mSearchedField.setText(object.getUsername());
+                            } else {
+                                mSearchedField.setText(" ");
+                            }
                         }
-                        mProgressBar.setVisibility(View.INVISIBLE);
-
-                        Log.i(TAG, "received " + users.length + " users");
-                    }
-
-                    @Override
-                    public void onFailure(Throwable throwable) {
-                        mProgressBar.setVisibility(View.INVISIBLE);
-                        Log.i(TAG, "received " + throwable);
-                    }
-                });
+                    });
+                } else {
+                    mSearchedField.setText(" ");
+                }
+                mProgressBar.setVisibility(View.INVISIBLE);
             }
 
             @Override
@@ -137,57 +144,50 @@ public class AddFriendActivity extends AppCompatActivity {
         mAddFriendCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                String friendId = mSearchField.getText().toString();
-
                 if(isChecked){
-                    //Add friend
-                    checkIfFirstFriend();
-
-                    KinveyReference friend = new KinveyReference(User.USER_COLLECTION_NAME, friendId);
-                    mKinveyClient.appData(User.USER_COLLECTION_NAME, KinveyReference.class).save(friend, new KinveyClientCallback<KinveyReference>() {
-                        @Override
-                        public void onSuccess(KinveyReference kinveyReference) {
-                            Toast.makeText(AddFriendActivity.this, "update successful", Toast.LENGTH_SHORT).show();
-                        }
-
-                        @Override
-                        public void onFailure(Throwable throwable) {
-                            Toast.makeText(AddFriendActivity.this, "update successful", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                   /* ((ArrayList<KinveyReference>) mKinveyClient.user().get(KinveyConstants.FRIENDS)).add(friend);
-*/
-
-
+                    mFriendsRelation.add(mFoundUser);
+                    Log.i(TAG, "Added: " + mFoundUser.getUsername());
                 } else {
                     //Remove friend
-
+                    mFriendsRelation.remove(mFoundUser);
+                    Log.i(TAG, "Deleted: " + mFoundUser.getUsername());
                 }
+
+                mCurrentUser.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e != null) {
+                            Log.e(TAG, e.getMessage());
+                        }
+                    }
+                });
             }
         });
 
     }
 
-    private void checkIfFirstFriend() {
-        if (mKinveyClient.user().get(KinveyConstants.FRIENDS) == null){
-            mKinveyClient.user().put(KinveyConstants.FRIENDS, new ArrayList<KinveyReference>());
+    private void populateFriendsList() {
+        mFriendsRelation.getQuery()
+                .addAscendingOrder(ParseConstants.KEY_USERNAME)
+                .findInBackground(new FindCallback<ParseUser>() {
+                    @Override
+                    public void done(List<ParseUser> list, ParseException e) {
+                        if (e == null) {
+                            mFriends = list;
 
-            mKinveyClient.user().update(new KinveyUserCallback() {
-                @Override
-                public void onSuccess(User user) {
-                    Toast.makeText(AddFriendActivity.this, "update successful", Toast.LENGTH_SHORT).show();
-                }
+                            // Fill and set Adapter
+                            if(mRecyclerView.getAdapter() == null){
+                                mRecyclerView.setLayoutManager(new LinearLayoutManager(AddFriendActivity.this));
+                                mRecyclerView.setAdapter(new AddFriendRecyclerViewAdapter(mFriends));
+                            } else{
+                                ((AddFriendRecyclerViewAdapter) mRecyclerView.getAdapter()).refill(list);
+                            }
 
-                @Override
-                public void onFailure(Throwable throwable) {
-                    Toast.makeText(AddFriendActivity.this, "update successful", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-
-    }
-
-    private ArrayList<ArrayMap> getUserFriends() {
-        return (ArrayList<ArrayMap>) mKinveyClient.user().get(KinveyConstants.FRIENDS);
+                        } else {
+                            Log.i(TAG, e.getMessage());
+                            Toast.makeText(AddFriendActivity.this, R.string.error_toast, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 }
