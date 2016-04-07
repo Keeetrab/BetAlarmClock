@@ -1,5 +1,8 @@
 apply plugin: 'com.android.application'
 
+def PARSE_APPLICATION_ID = "" + ParseApplicationId + "" ?: "Define ApplicationId ";
+def PARSE_CLIENT_KEY = "" + ParseClientKey + "" ?: "Define Client Key";
+
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.0"
@@ -12,7 +15,13 @@ android {
         versionName "1.0"
     }
     buildTypes {
+        debug{
+            buildConfigField 'String', 'PARSE_APPLICATION_ID', PARSE_APPLICATION_ID
+            buildConfigField 'String', 'PARSE_CLIENT_KEY', PARSE_CLIENT_KEY
+        }
         release {
+            buildConfigField 'String', 'PARSE_APPLICATION_ID', PARSE_APPLICATION_ID
+            buildConfigField 'String', 'PARSE_CLIENT_KEY', PARSE_CLIENT_KEY
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
