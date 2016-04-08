@@ -8,10 +8,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.api.client.util.ArrayMap;
+import com.parse.ParseUser;
 
 import kosewski.bartosz.betalarmclock.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 //TODO: Replace the implementation with code for your data type.
@@ -19,9 +21,9 @@ import java.util.ArrayList;
 public class FriendRecyclerViewAdapter extends RecyclerView.Adapter<FriendRecyclerViewAdapter.ViewHolder> {
 
     private static final String TAG = FriendRecyclerViewAdapter.class.getSimpleName();
-    private final ArrayList<ArrayMap> mFriends;
+    private List<ParseUser> mFriends;
 
-    public FriendRecyclerViewAdapter(ArrayList<ArrayMap> items) {
+    public FriendRecyclerViewAdapter(List<ParseUser> items) {
         mFriends = items;
     }
 
@@ -34,9 +36,9 @@ public class FriendRecyclerViewAdapter extends RecyclerView.Adapter<FriendRecycl
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        ArrayMap user = mFriends.get(position);
+        ParseUser user = mFriends.get(position);
         holder.mUser = user;
-        holder.mUsername.setText((String) user.get("_id"));
+        holder.mUsername.setText(user.getUsername());
 
     }
 
@@ -50,9 +52,20 @@ public class FriendRecyclerViewAdapter extends RecyclerView.Adapter<FriendRecycl
         return length;
     }
 
+    public void refill(List<ParseUser> users) {
+        if(mFriends != null) {
+            mFriends.clear();
+            mFriends.addAll(users);
+        } else {
+            mFriends = users;
+        }
+
+        notifyDataSetChanged();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public ArrayMap mUser;
+        public ParseUser mUser;
         public TextView mUsername;
 
         public ViewHolder(View view) {

@@ -49,8 +49,6 @@ public class AlarmListFragment extends Fragment {
         mContext = getActivity().getApplicationContext();
         mDataSource = new AlarmDataSource(mContext);
         mAlarmList = mDataSource.readAlarms();
-
-
     }
 
     @Override
