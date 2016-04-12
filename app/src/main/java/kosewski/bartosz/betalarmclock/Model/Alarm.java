@@ -13,6 +13,8 @@ public class Alarm implements Parcelable {
     private boolean[] mDays;
     private boolean mIsEnabled;
     private boolean mIsOneShot;
+    private int mTimesSnoozed;
+    private int mLastTimeActive;
 
 
     //Constructor for creating alarm
@@ -23,10 +25,13 @@ public class Alarm implements Parcelable {
         System.arraycopy(days, 0, mDays, 0, days.length);
         mIsEnabled = true;
         mIsOneShot = setIsOneShot(mDays);
+        mTimesSnoozed = 0;
+        mLastTimeActive = 0;
+
     }
 
     //Constructor for populating list
-    public Alarm (int hour, int minutes, int id, boolean[] days, int isEnabled){
+    public Alarm (int hour, int minutes, int id, boolean[] days, int isEnabled, int timesSnoozed, int lastTimeActive){
         mHour = hour;
         mMinutes = minutes;
         mId = id;
@@ -34,8 +39,25 @@ public class Alarm implements Parcelable {
         System.arraycopy(days, 0, mDays, 0, days.length);
         mIsEnabled = isEnabled == 1;
         mIsOneShot = setIsOneShot(mDays);
+        mTimesSnoozed = timesSnoozed;
+        mLastTimeActive = lastTimeActive;
     }
 
+    public int getTimesSnoozed() {
+        return mTimesSnoozed;
+    }
+
+    public void setTimesSnoozed(int timesSnoozed) {
+        mTimesSnoozed = timesSnoozed;
+    }
+
+    public int getLastTimeActive() {
+        return mLastTimeActive;
+    }
+
+    public void setLastTimeActive(int lastTimeActive) {
+        mLastTimeActive = lastTimeActive;
+    }
 
     public boolean isOneShot() {
         return mIsOneShot;
@@ -107,6 +129,8 @@ public class Alarm implements Parcelable {
         mDays = source.createBooleanArray();
         mIsEnabled = source.readInt() != 0;
         mIsOneShot = setIsOneShot(mDays);
+        mTimesSnoozed = source.readInt();
+        mLastTimeActive = source.readInt();
     }
 
     @Override
@@ -121,6 +145,8 @@ public class Alarm implements Parcelable {
         dest.writeInt(mId);
         dest.writeBooleanArray(mDays);
         dest.writeInt((mIsEnabled ? 1 : 0));
+        dest.writeInt(mTimesSnoozed);
+        dest.writeInt(mLastTimeActive);
     }
 
     public static final Creator<Alarm> CREATOR = new Creator<Alarm>() {

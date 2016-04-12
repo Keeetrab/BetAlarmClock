@@ -13,19 +13,23 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
     private static final String DB_NAME = "alarms.db";
-    private static final int DB_VERSION = 3;
+    private static final int DB_VERSION = 4;
     public static final String ALARMS_TABLE = "ALARMS";
     public static final String COLUMN_ALARM_HOUR = "HOUR";
     public static final String COLUMN_ALARM_MINUTES = "MINUTES";
     public static final String COLUMN_ALARM_REPEATING_DAYS = "REPEATING_DAYS";
     public static final String COLUMN_ALARM_IS_ENABLED = "IS_ENABLED";
+    public static final String COLUMN_TIMES_SNOOZED = "TIMES_SNOOZED";
+    public static final String COLUMN_LAST_ACTIVE = "LAST_TIME_ACTIVE";
 
     private static String CREATE_ALARMS =
             "CREATE TABLE " + ALARMS_TABLE + "(" + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     COLUMN_ALARM_HOUR + " INTEGER, " +
                     COLUMN_ALARM_MINUTES + " INTEGER, " +
                     COLUMN_ALARM_REPEATING_DAYS + " TEXT, " +
-                    COLUMN_ALARM_IS_ENABLED + " INTEGER)";
+                    COLUMN_ALARM_IS_ENABLED + " INTEGER, " +
+                    COLUMN_TIMES_SNOOZED + " INTEGER, " +
+                    COLUMN_LAST_ACTIVE + " INTEGER)";
 
     public DbHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);

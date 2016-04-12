@@ -62,7 +62,9 @@ public class AlarmDataSource {
                         getIntFromColumnName(cursor, mDbHelper.COLUMN_ALARM_MINUTES),
                         getIntFromColumnName(cursor, BaseColumns._ID),
                         daysFromStringToBoolean(cursor),
-                        getIntFromColumnName(cursor,mDbHelper.COLUMN_ALARM_IS_ENABLED));
+                        getIntFromColumnName(cursor,mDbHelper.COLUMN_ALARM_IS_ENABLED),
+                        getIntFromColumnName(cursor,mDbHelper.COLUMN_TIMES_SNOOZED),
+                        getIntFromColumnName(cursor,mDbHelper.COLUMN_LAST_ACTIVE));
                 alarmList.add(alarm);
             } while (cursor.moveToNext());
         }
@@ -83,7 +85,9 @@ public class AlarmDataSource {
                         getIntFromColumnName(cursor, mDbHelper.COLUMN_ALARM_MINUTES),
                         getIntFromColumnName(cursor, BaseColumns._ID),
                         daysFromStringToBoolean(cursor),
-                        getIntFromColumnName(cursor,mDbHelper.COLUMN_ALARM_IS_ENABLED));
+                        getIntFromColumnName(cursor,mDbHelper.COLUMN_ALARM_IS_ENABLED),
+                        getIntFromColumnName(cursor,mDbHelper.COLUMN_TIMES_SNOOZED),
+                        getIntFromColumnName(cursor,mDbHelper.COLUMN_LAST_ACTIVE));
         }
 
         cursor.close();
@@ -126,6 +130,8 @@ public class AlarmDataSource {
         values.put(mDbHelper.COLUMN_ALARM_MINUTES, alarm.getMinutes());
         values.put(mDbHelper.COLUMN_ALARM_REPEATING_DAYS, daysFromBooleanToString(alarm));
         values.put(mDbHelper.COLUMN_ALARM_IS_ENABLED, isAlarmEnabled(alarm));
+        values.put(mDbHelper.COLUMN_TIMES_SNOOZED, alarm.getTimesSnoozed());
+        values.put(mDbHelper.COLUMN_LAST_ACTIVE, alarm.getLastTimeActive());
 
         return values;
     }

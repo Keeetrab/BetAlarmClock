@@ -29,4 +29,13 @@
         android:keepScreenOn="true"
         android:soundEffectsEnabled="true"/>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SNOOZE"
+        android:id="@+id/snoozeButton"
+        android:layout_above="@+id/finishButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="34dp"/>
+
 </RelativeLayout>
