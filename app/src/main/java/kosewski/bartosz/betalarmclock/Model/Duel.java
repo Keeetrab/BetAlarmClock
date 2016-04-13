@@ -1,6 +1,5 @@
 package kosewski.bartosz.betalarmclock.Model;
 
-import com.kinvey.java.User;
 import com.parse.ParseUser;
 
 /**

@@ -23,12 +23,12 @@ import kosewski.bartosz.betalarmclock.Utils.GeneralUtilities;
 public class AlarmRingingActivity extends AppCompatActivity {
     private static final String TAG = AlarmRingingActivity.class.getSimpleName();
     private Vibrator mVibrator;
-    private Ringtone mRingtone;
+    private AlarmRingtonePlayer mPlayer;
     private AlarmDataSource mDataSource;
     private Alarm mAlarm;
 
     private boolean mIsClosedProperly = false;
-    private AlarmRingtonePlayer mPlayer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +76,7 @@ public class AlarmRingingActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
+        // Snooze if activity closed not properly
         if(!mIsClosedProperly){
           snooze();
         }
