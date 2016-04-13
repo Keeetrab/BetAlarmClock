@@ -6,7 +6,7 @@ import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
 import android.widget.Toast;
 
-import kosewski.bartosz.betalarmclock.UI.AlarmRingingActivity;
+import kosewski.bartosz.betalarmclock.Ringing.AlarmRingingActivity;
 
 public class AlarmReceiver extends WakefulBroadcastReceiver {
 

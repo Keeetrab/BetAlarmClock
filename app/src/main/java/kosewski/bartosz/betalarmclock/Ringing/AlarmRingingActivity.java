@@ -1,16 +1,16 @@
-package kosewski.bartosz.betalarmclock.UI;
+package kosewski.bartosz.betalarmclock.Ringing;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 
 import kosewski.bartosz.betalarmclock.Model.Alarm;
@@ -21,12 +21,14 @@ import kosewski.bartosz.betalarmclock.Utils.Constants;
 import kosewski.bartosz.betalarmclock.Utils.GeneralUtilities;
 
 public class AlarmRingingActivity extends AppCompatActivity {
+    private static final String TAG = AlarmRingingActivity.class.getSimpleName();
     private Vibrator mVibrator;
     private Ringtone mRingtone;
     private AlarmDataSource mDataSource;
     private Alarm mAlarm;
 
     private boolean mIsClosedProperly = false;
+    private AlarmRingtonePlayer mPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +42,16 @@ public class AlarmRingingActivity extends AppCompatActivity {
 
 
         // The ringing effects
+        mPlayer = new AlarmRingtonePlayer(this);
+        mPlayer.initialize();
+
         Uri alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         if (alarmUri == null) {
             alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         }
-        mRingtone = RingtoneManager.getRingtone(this, alarmUri);
-        mRingtone.play();
+        mPlayer.play(alarmUri);
+
+
         mVibrator = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
         long[] pattern = { 0, 300, 200, 300, 100, 100 };
         mVibrator.vibrate(pattern, 0);
@@ -70,7 +76,6 @@ public class AlarmRingingActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        ///TODO tu zmienic bo dziala nawet na snoozie
         if(!mIsClosedProperly){
           snooze();
         }
@@ -96,7 +101,7 @@ public class AlarmRingingActivity extends AppCompatActivity {
 
     private void snooze() {
         stopRinging();
-        
+
         AlarmScheduler.cancelSingleAlarm(this, mAlarm);
         AlarmScheduler.snoozeAlarm(this, mAlarm, Constants.SNOOZE_DURATION);
 
@@ -107,7 +112,7 @@ public class AlarmRingingActivity extends AppCompatActivity {
 
     private void stopRinging() {
         mVibrator.cancel();
-        mRingtone.stop();
+        mPlayer.stop();
     }
 
     private void getAlarm() {
@@ -120,6 +125,6 @@ public class AlarmRingingActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
+        //Intentionally empty
     }
 }
