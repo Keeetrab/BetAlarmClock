@@ -123,6 +123,7 @@ public class EditAlarmActivity extends AppCompatActivity {
             mAlarm.setHour(mHour);
             mAlarm.setMinutes(mMinutes);
             mAlarm.setDays(getRepeatingDays());
+            mAlarm.setIsEnabled(true);
 
             mDataSource.update(mAlarm);
         } else {

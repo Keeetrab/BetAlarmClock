@@ -17,22 +17,24 @@ import kosewski.bartosz.betalarmclock.Model.Alarm;
 import kosewski.bartosz.betalarmclock.Database.AlarmDataSource;
 import kosewski.bartosz.betalarmclock.R;
 import kosewski.bartosz.betalarmclock.Scheduling.AlarmScheduler;
+import kosewski.bartosz.betalarmclock.Utils.Constants;
+import kosewski.bartosz.betalarmclock.Utils.GeneralUtilities;
 
-public class AlarmActivity extends AppCompatActivity {
+public class AlarmRingingActivity extends AppCompatActivity {
     private Vibrator mVibrator;
     private Ringtone mRingtone;
     private AlarmDataSource mDataSource;
     private Alarm mAlarm;
 
+    private boolean mIsClosedProperly = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        GeneralUtilities.setLockingScreenFlags(getWindow());
+
         setContentView(R.layout.activity_alarm);
-        final Window win = getWindow();
-        win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
-                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
-        win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
-                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
         getAlarm();
 
@@ -56,19 +58,27 @@ public class AlarmActivity extends AppCompatActivity {
                         cancelAlarm();
             }
         });
+
+        Button snoozeButton = (Button) findViewById(R.id.snoozeButton);
+        snoozeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                snooze();
+            }
+        });
     }
-
-
 
     @Override
     protected void onPause() {
+        ///TODO tu zmienic bo dziala nawet na snoozie
+        if(!mIsClosedProperly){
+          snooze();
+        }
         super.onPause();
-        cancelAlarm();
     }
 
     private void cancelAlarm() {
-        mVibrator.cancel();
-        mRingtone.stop();
+        stopRinging();
 
         if(mAlarm.isOneShot()){
             mAlarm.setIsEnabled(false);
@@ -79,10 +89,26 @@ public class AlarmActivity extends AppCompatActivity {
         AlarmScheduler.cancelAlarms(this);
         AlarmScheduler.setAlarms(this);
 
-
+        mIsClosedProperly = true;
         finish();
     }
 
+
+    private void snooze() {
+        stopRinging();
+        
+        AlarmScheduler.cancelSingleAlarm(this, mAlarm);
+        AlarmScheduler.snoozeAlarm(this, mAlarm, Constants.SNOOZE_DURATION);
+
+        mIsClosedProperly = true;
+        finish();
+    }
+
+
+    private void stopRinging() {
+        mVibrator.cancel();
+        mRingtone.stop();
+    }
 
     private void getAlarm() {
         Intent intent = getIntent();
@@ -92,4 +118,8 @@ public class AlarmActivity extends AppCompatActivity {
         mAlarm = mDataSource.readAlarmById(alarmId);
     }
 
+    @Override
+    public void onBackPressed() {
+
+    }
 }

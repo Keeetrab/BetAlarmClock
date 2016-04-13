@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.Calendar;
 import java.util.List;
@@ -29,19 +30,7 @@ public class AlarmScheduler {
 
         for(Alarm alarm : alarms) {
             if(alarm.isEnabled()) {
-
-                Calendar calendarFrom = Calendar.getInstance();
-
-                AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
-                PendingIntent pendingIntent = createPendingIntent(context, alarm);
-                Log.i(context.getPackageName(), "Setting Alarm: " + alarm.getId() + "Time: " + alarm.getHour() + ":" + alarm.getMinutes());
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, getAlarmTime(calendarFrom, alarm), pendingIntent);
-                } else {
-                    alarmManager.set(AlarmManager.RTC_WAKEUP, getAlarmTime(calendarFrom, alarm), pendingIntent);
-                }
+                setSingleAlarm(context, alarm);
             }
         }
     }
@@ -62,14 +51,56 @@ public class AlarmScheduler {
 
         if(alarms.size() != 0 || alarms != null) {
             for(Alarm alarm : alarms){
-                PendingIntent pendingIntent = createPendingIntent(context, alarm);
-                Log.i(context.getPackageName(), "Canceling alarm: " + alarm.getId() + " Time: " + alarm.getHour() + ":" + alarm.getMinutes());
-
-                AlarmManager alarmManager = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
-                alarmManager.cancel(pendingIntent);
+                cancelSingleAlarm(context, alarm);
             }
         }
     }
+
+    public static void setSingleAlarm(Context context, Alarm alarm){
+        Calendar calendarFrom = Calendar.getInstance();
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        PendingIntent pendingIntent = createPendingIntent(context, alarm);
+        Log.i(context.getPackageName(), "Setting Alarm: " + alarm.getId() + "Time: " + alarm.getHour() + ":" + alarm.getMinutes());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, getAlarmTime(calendarFrom, alarm), pendingIntent);
+        } else {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, getAlarmTime(calendarFrom, alarm), pendingIntent);
+        }
+    }
+
+    public static void cancelSingleAlarm(Context context, Alarm alarm){
+        PendingIntent pendingIntent = createPendingIntent(context, alarm);
+        Log.i(context.getPackageName(), "Canceling alarm: " + alarm.getId() + " Time: " + alarm.getHour() + ":" + alarm.getMinutes());
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
+    }
+
+    public static void snoozeAlarm(Context context, Alarm alarm, Long snoozeDuration){
+        Calendar calendarAlarm = Calendar.getInstance();
+        calendarAlarm.set(Calendar.SECOND, 0);
+        calendarAlarm.set(Calendar.MILLISECOND, 0);
+        long now = calendarAlarm.getTimeInMillis();
+
+        calendarAlarm.setTimeInMillis(now + snoozeDuration);
+        long snoozeTime = calendarAlarm.getTimeInMillis();
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        PendingIntent pendingIntent = createPendingIntent(context, alarm);
+        Toast.makeText(context, "Alarm snoozed! Alarm set to " + calendarAlarm.get(Calendar.HOUR_OF_DAY) + ":" + calendarAlarm.get(Calendar.MINUTE), Toast.LENGTH_LONG).show();
+        Log.i(context.getPackageName(), "Setting Alarm: " + alarm.getId() + "Time: " + calendarAlarm.get(Calendar.HOUR_OF_DAY) + ":" + calendarAlarm.get(Calendar.MINUTE));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, snoozeTime, pendingIntent);
+        } else {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, snoozeTime, pendingIntent);
+        }
+    }
+
 
     public static void deleteAlarm(Context context, Alarm alarm) {
         AlarmScheduler.cancelAlarms(context);

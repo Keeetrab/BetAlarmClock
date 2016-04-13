@@ -8,4 +8,8 @@ public class Constants {
     public static final String MINUTE = "time_minute";
     public static final String TIME_PICKER = "time_picker";
     public static final String ALARM = "alarm";
+
+    public static final long SNOOZE_MINUTES = 2;
+    public static final long SNOOZE_DURATION = SNOOZE_MINUTES * 60 * 1000;
+
 }

@@ -44,7 +44,7 @@
             android:exported="true">
         </receiver>
 
-        <activity android:name=".UI.AlarmActivity">
+        <activity android:name=".UI.AlarmRingingActivity">
         </activity>
         <activity
             android:name=".UI.LoginActivity"

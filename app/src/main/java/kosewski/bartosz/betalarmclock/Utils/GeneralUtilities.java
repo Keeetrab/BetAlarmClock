@@ -1,5 +1,8 @@
 package kosewski.bartosz.betalarmclock.Utils;
 
+import android.view.Window;
+import android.view.WindowManager;
+
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -12,6 +15,13 @@ public final class GeneralUtilities {
 
     private final static String TWO_CHARACTER_SHORT_DAY_PATTERN = "EEEEEE";
     private GeneralUtilities() {}
+
+    public static void setLockingScreenFlags(Window win){
+        win.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+        win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+        win.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+    }
 
     public static String[] getShortDayNames() {
         String[] dayNames = new String[7];

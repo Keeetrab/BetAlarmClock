@@ -21,6 +21,8 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ALARM_IS_ENABLED = "IS_ENABLED";
     public static final String COLUMN_TIMES_SNOOZED = "TIMES_SNOOZED";
     public static final String COLUMN_LAST_ACTIVE = "LAST_TIME_ACTIVE";
+    public static final String COLUMN_IS_SNOOZED = "IS_SNOOZED";
+    public static final String COLUMN_SNOOZE_HOUR = "SNOOZE_HOUR";
 
     private static String CREATE_ALARMS =
             "CREATE TABLE " + ALARMS_TABLE + "(" + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
